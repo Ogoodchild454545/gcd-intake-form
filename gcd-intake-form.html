@@ -474,8 +474,7 @@ async function submit() {
   if (!ok(5)) return;
   document.getElementById('overlay').classList.add('show');
   try {
-    var summary = await genSummary();
-    await sendEmail(summary);
+    await sendEmail();
     document.getElementById('overlay').classList.remove('show');
     document.querySelector('.container').innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="width:68px;height:68px;background:#EEF1F8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:#1C2B4A">✓</div><h2 style="font-family:Playfair Display,serif;font-size:26px;font-weight:400;color:#1C2B4A;margin-bottom:10px">Thank you, '+D.name.split(' ')[0]+'</h2><p style="color:#6B7A99;font-size:15px;line-height:1.7;max-width:420px;margin:0 auto">Your intake form has been received. Your dietitian will review it and be in touch shortly with a booking link.<br><br>If you have any urgent questions please contact us directly.</p></div>';
   } catch(e) {
@@ -497,8 +496,8 @@ async function genSummary() {
   return data.content[0].text;
 }
 
-async function sendEmail(summary) {
-  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: '+new Date().toLocaleString('en-GB')+'\nClient: '+D.name+' | DOB: '+D.dob+' | Reason: '+D.reason+'\nEmail: '+D.email+' | Phone: '+D.phone+' | Appt: '+D.appt+'\n\n=== AI CLINICAL SUMMARY ===\n'+summary+'\n\n=== RAW DATA ===\nHeight: '+(D.height||'-')+' | Weight: '+(D.weight||'-')+'\nConditions: '+(D.conditions||'-')+'\nMeds: '+(D.meds||'-')+'\nAllergies: '+(D.allergies||'-')+'\nDiet: '+((D.diet||[]).join(', ')||'-')+'\nTypical day: '+(D.typDay||'-')+'\nDiet score: '+(D.dietScore||'-')+'/10 | Activity: '+(D.act||'-')+' | Alcohol: '+(D.alc||'-')+' | Smoking: '+(D.smoke||'-')+'\nGoals: '+(D.goals||'-')+' | Motivation: '+(D.motiv||'-')+'/10\nNotes: '+(D.extra||'-')+'\nCondition data:\n'+(D.cond?Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||'-');}).join('\n'):'-');
+async function sendEmail() {
+  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: '+new Date().toLocaleString('en-GB')+'\nClient: '+D.name+' | DOB: '+D.dob+' | Reason: '+D.reason+'\nEmail: '+D.email+' | Phone: '+D.phone+' | Appt: '+D.appt+'\nNHS: '+(D.nhs||'not provided')+' | GP: '+D.gp+'\n\n=== FORM DATA ===\nHeight: '+(D.height||'-')+' | Weight: '+(D.weight||'-')+'\nConditions: '+(D.conditions||'-')+'\nMeds: '+(D.meds||'-')+'\nAllergies: '+(D.allergies||'-')+'\nSeen dietitian before: '+(D.seen||'-')+'\nDiet prefs: '+((D.diet||[]).join(', ')||'-')+'\nTypical day: '+(D.typDay||'-')+'\nDiet score: '+(D.dietScore||'-')+'/10\nActivity: '+(D.act||'-')+' | Alcohol: '+(D.alc||'-')+' | Smoking: '+(D.smoke||'-')+'\nGoals: '+(D.goals||'-')+'\nMotivation: '+(D.motiv||'-')+'/10\nNotes: '+(D.extra||'-')+'\n\nCondition-specific answers:\n'+(D.cond?Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||'-');}).join('\n'):'-');
   var fd = new FormData();
   fd.append('access_key','745d3aa8-30e6-4f01-8bb4-7fa0f0fbc8e2');
   fd.append('subject','New GCD Intake: '+D.name+' — '+D.reason);
