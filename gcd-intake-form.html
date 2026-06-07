@@ -3,845 +3,519 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="frame-ancestors *">
 <title>The GCD Clinic — New Client Intake</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy: #1C2B4A;
-    --yellow: #F0C419;
-    --yellow-pale: #FEF9E7;
-    --cream: #F5F5F5;
-    --white: #FFFFFF;
-    --border: #DCDCDC;
-    --text: #1C2B4A;
-    --muted: #6B7A99;
-    --blue-pastel: #A8C8E0;
-    --green-pastel: #B8D9A4;
-    --purple-pastel: #C8B4D8;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1C2B4A;
+  --yellow: #F0C419;
+  --cream: #F5F5F5;
+  --white: #fff;
+  --border: #DCDCDC;
+  --muted: #6B7A99;
+  --error: #C0392B;
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--navy); min-height: 100vh; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+.header { background: var(--navy); padding: 18px 32px; border-bottom: 3px solid var(--yellow); }
+.header h1 { color: #fff; font-size: 18px; font-weight: 500; }
+.header p { color: var(--yellow); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 3px; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-  }
+.progress-bar { height: 4px; background: var(--border); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--navy), var(--yellow)); transition: width 0.4s; width: 0%; }
 
-  /* Header */
-  .header {
-    background: var(--navy);
-    padding: 16px 40px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .header-logo-wrap {
-    background: white;
-    border-radius: 50%;
-    width: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    overflow: hidden;
-    padding: 4px;
-  }
-  .header-logo-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .header-divider {
-    width: 1px;
-    height: 36px;
-    background: rgba(255,255,255,0.2);
-  }
-  .header-text h1 {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 17px;
-    color: #fff;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-  }
-  .header-text p {
-    font-size: 11px;
-    color: var(--yellow);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-top: 3px;
-    font-weight: 400;
-  }
+.container { max-width: 660px; margin: 0 auto; padding: 40px 20px 80px; }
 
-  /* Progress */
-  .progress-bar {
-    height: 4px;
-    background: var(--border);
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--navy), var(--yellow));
-    transition: width 0.5s ease;
-    width: 0%;
-  }
+.section { display: none; }
+.section.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 48px 24px 80px;
-  }
+.step-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.section h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: var(--navy); margin-bottom: 8px; }
+.section p.sub { color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 32px; }
 
-  .section { display: none; animation: fadeUp 0.4s ease; }
-  .section.active { display: block; }
+.field { margin-bottom: 24px; }
+label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 7px; }
+label .req { color: var(--error); margin-left: 2px; }
+label .opt { color: var(--muted); font-weight: 300; font-size: 13px; margin-left: 4px; }
+label .hint { display: block; font-weight: 300; font-size: 13px; color: var(--muted); margin-top: 2px; }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+input[type=text], input[type=email], input[type=tel], input[type=date], textarea {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--navy); background: var(--white);
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(28,43,74,0.08); }
+textarea { resize: vertical; min-height: 96px; }
 
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 30px;
-    color: var(--navy);
-    font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-  .section-sub {
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 36px;
-  }
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-group.row { flex-direction: row; flex-wrap: wrap; }
+.radio-opt {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer;
+  font-size: 14px; background: var(--white); transition: all 0.15s;
+  user-select: none;
+}
+.radio-opt:hover { border-color: var(--navy); background: #EEF1F8; }
+.radio-opt.on { border-color: var(--navy); background: #EEF1F8; font-weight: 500; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.15s; }
+.radio-opt.on .dot { border-color: var(--navy); background: var(--navy); box-shadow: inset 0 0 0 3px #fff; }
 
-  .field { margin-bottom: 28px; }
-  label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 8px;
-    line-height: 1.4;
-  }
-  label .req { color: #C0392B; margin-left: 2px; }
-  label .hint {
-    display: block;
-    font-weight: 300;
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+.check-group { display: flex; flex-direction: column; gap: 8px; }
+.check-opt {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer;
+  font-size: 14px; background: var(--white); transition: all 0.15s;
+  user-select: none;
+}
+.check-opt:hover { border-color: var(--navy); background: #EEF1F8; }
+.check-opt.on { border-color: var(--navy); background: #EEF1F8; font-weight: 500; }
+.box { width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.15s; display:flex; align-items:center; justify-content:center; }
+.check-opt.on .box { border-color: var(--navy); background: var(--navy); }
+.check-opt.on .box::after { content:''; width:8px; height:5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg) translateY(-1px); display:block; }
 
-  input[type="text"], input[type="email"], input[type="tel"],
-  input[type="date"], select, textarea {
-    width: 100%;
-    padding: 13px 16px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: var(--text);
-    background: var(--white);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    appearance: none;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--navy);
-    box-shadow: 0 0 0 3px rgba(28,43,74,0.08);
-  }
-  textarea { resize: vertical; min-height: 100px; }
+.scale-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.scale-btn {
+  width: 42px; height: 42px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; color: var(--navy);
+}
+.scale-btn:hover { border-color: var(--navy); background: #EEF1F8; }
+.scale-btn.on { border-color: var(--navy); background: var(--navy); color: #fff; }
+.scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 5px; }
 
-  .radio-group, .check-group { display: flex; flex-direction: column; gap: 10px; }
-  .radio-group.inline, .check-group.inline { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+.err { color: var(--error); font-size: 13px; margin-top: 5px; display: none; }
+.field.bad input, .field.bad textarea { border-color: var(--error); }
+.field.bad .err { display: block; }
 
-  .radio-option, .check-option {
-    display: flex; align-items: center; gap: 10px;
-    padding: 11px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    font-size: 14px;
-    background: var(--white);
-  }
-  .radio-option:hover, .check-option:hover {
-    border-color: var(--navy);
-    background: #F0F3F8;
-  }
-  .radio-option.selected, .check-option.selected {
-    border-color: var(--navy);
-    background: #EEF1F8;
-    color: var(--navy);
-    font-weight: 500;
-  }
-  .radio-dot {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    flex-shrink: 0;
-    transition: all 0.2s;
-  }
-  .radio-option.selected .radio-dot {
-    border-color: var(--navy);
-    background: var(--navy);
-    box-shadow: inset 0 0 0 3px #fff;
-  }
-  .check-box {
-    width: 16px; height: 16px;
-    border-radius: 4px;
-    border: 2px solid var(--border);
-    flex-shrink: 0;
-    transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .check-option.selected .check-box {
-    border-color: var(--navy);
-    background: var(--navy);
-  }
-  .check-option.selected .check-box::after {
-    content: '';
-    width: 8px; height: 5px;
-    border-left: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-    transform: rotate(-45deg) translateY(-1px);
-    display: block;
-  }
+.nav { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+.btn-back { padding: 12px 22px; border: 1.5px solid var(--border); border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.btn-back:hover { border-color: var(--navy); color: var(--navy); }
+.btn-next { padding: 13px 28px; background: var(--navy); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: #fff; cursor: pointer; transition: background 0.2s; margin-left: auto; }
+.btn-next:hover { background: #2A3F6B; }
 
-  .scale-group { display: flex; gap: 8px; flex-wrap: wrap; }
-  .scale-btn {
-    width: 44px; height: 44px;
-    border-radius: 8px;
-    border: 1.5px solid var(--border);
-    background: var(--white);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
-    color: var(--text);
-  }
-  .scale-btn:hover { border-color: var(--navy); background: #EEF1F8; }
-  .scale-btn.selected { border-color: var(--navy); background: var(--navy); color: #fff; }
-  .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.consent-box { background: #FFFBEA; border: 1px solid var(--yellow); border-radius: 10px; padding: 18px; font-size: 13px; line-height: 1.7; margin-bottom: 20px; }
+.consent-box strong { color: var(--navy); }
+.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
 
-  .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(245,245,245,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+.overlay.show { display: flex; }
+.spinner { width: 44px; height: 44px; border: 3px solid var(--border); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.overlay p { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--navy); }
+.overlay small { color: var(--muted); font-size: 13px; }
 
-  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; gap: 16px; }
-  .btn-back {
-    padding: 13px 24px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-back:hover { border-color: var(--navy); color: var(--navy); }
-  .btn-next {
-    padding: 14px 32px;
-    background: var(--navy);
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-left: auto;
-  }
-  .btn-next:hover { background: #2A3F6B; }
-
-  .consent-box {
-    background: var(--yellow-pale);
-    border: 1px solid var(--yellow);
-    border-radius: 10px;
-    padding: 20px;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text);
-    margin-bottom: 24px;
-  }
-  .consent-box strong { color: var(--navy); }
-
-  .submitting-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(245,245,245,0.95);
-    z-index: 100;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-  }
-  .submitting-overlay.show { display: flex; }
-  .spinner {
-    width: 48px; height: 48px;
-    border: 3px solid var(--border);
-    border-top-color: var(--navy);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .submitting-overlay p { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--navy); }
-  .submitting-overlay small { color: var(--muted); font-size: 13px; }
-
-  .error-msg { color: #C0392B; font-size: 13px; margin-top: 6px; display: none; }
-  .field.error input, .field.error textarea { border-color: #C0392B; }
-  .field.error .error-msg { display: block; }
-
-  @media (max-width: 480px) {
-    .container { padding: 28px 16px 60px; }
-    .section-title { font-size: 24px; }
-    .header { padding: 14px 16px; }
-    .scale-btn { width: 36px; height: 36px; font-size: 13px; }
-  }
+@media (max-width: 480px) {
+  .container { padding: 28px 14px 60px; }
+  .section h2 { font-size: 24px; }
+  .scale-btn { width: 34px; height: 34px; font-size: 13px; }
+}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-text">
-    <h1>The Goodchild Dietitian Clinic</h1>
-    <p>New Client Intake Form</p>
-  </div>
+  <h1>The Goodchild Dietitian Clinic</h1>
+  <p>New Client Intake Form</p>
 </div>
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-
-<div class="submitting-overlay" id="submittingOverlay">
-  <div class="spinner"></div>
-  <p>Generating your clinical summary…</p>
-  <small>This takes about 20 seconds</small>
-</div>
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+<div class="overlay" id="overlay"><div class="spinner"></div><p>Generating your summary…</p><small>This takes about 20 seconds</small></div>
 
 <div class="container">
 
-  <!-- SECTION 0: Welcome -->
-  <div class="section active" id="sec-0">
-    <div class="section-label">Welcome</div>
-    <h2 class="section-title">Before your appointment</h2>
-    <p class="section-sub">This form helps your dietitian understand your situation before you meet. It takes around 10–12 minutes. Your answers are confidential and used only to support your care.</p>
+<!-- 0: Welcome -->
+<div class="section active" id="s0">
+  <div class="step-label">Welcome</div>
+  <h2>Before your appointment</h2>
+  <p class="sub">This form helps your dietitian understand your situation before you meet. It takes around 10–12 minutes and is fully confidential.</p>
 
-    <div class="field" id="f-name">
-      <label>Full name <span class="req">*</span></label>
-      <input type="text" id="name" placeholder="e.g. Jane Smith">
-      <div class="error-msg">Please enter your full name</div>
+  <div class="field" id="f-name"><label>Full name <span class="req">*</span></label><input type="text" id="name" placeholder="e.g. Jane Smith"><div class="err">Please enter your full name</div></div>
+  <div class="field" id="f-dob"><label>Date of birth <span class="req">*</span></label><input type="date" id="dob"><div class="err">Please enter your date of birth</div></div>
+  <div class="field" id="f-email"><label>Email address <span class="req">*</span></label><input type="email" id="email" placeholder="your@email.com"><div class="err">Please enter a valid email</div></div>
+  <div class="field" id="f-phone"><label>Phone number <span class="req">*</span></label><input type="tel" id="phone" placeholder="07xxx xxxxxx"><div class="err">Please enter your phone number</div></div>
+  <div class="field"><label>NHS number <span class="opt">(if known)</span></label><input type="text" id="nhs" placeholder="e.g. 485 777 3456"></div>
+  <div class="field" id="f-gp"><label>GP surgery name &amp; town <span class="req">*</span></label><input type="text" id="gp" placeholder="e.g. Maidstone Medical Centre, Maidstone"><div class="err">Please enter your GP surgery</div></div>
+  <div class="field" id="f-appt">
+    <label>Preferred appointment type <span class="req">*</span></label>
+    <div class="radio-group" id="apptGrp">
+      <div class="radio-opt" onclick="pick('appt','video',this)"><div class="dot"></div> Video call</div>
+      <div class="radio-opt" onclick="pick('appt','phone',this)"><div class="dot"></div> Phone call</div>
+      <div class="radio-opt" onclick="pick('appt','none',this)"><div class="dot"></div> No preference</div>
     </div>
-    <div class="field" id="f-dob">
-      <label>Date of birth <span class="req">*</span></label>
-      <input type="date" id="dob">
-      <div class="error-msg">Please enter your date of birth</div>
-    </div>
-    <div class="field" id="f-email">
-      <label>Email address <span class="req">*</span></label>
-      <input type="email" id="email" placeholder="your@email.com">
-      <div class="error-msg">Please enter a valid email</div>
-    </div>
-    <div class="field" id="f-phone">
-      <label>Phone number <span class="req">*</span></label>
-      <input type="tel" id="phone" placeholder="07xxx xxxxxx">
-      <div class="error-msg">Please enter your phone number</div>
-    </div>
-    <div class="field">
-      <label>NHS number <span style="font-weight:300;color:var(--muted)">(if known)</span></label>
-      <input type="text" id="nhs" placeholder="e.g. 485 777 3456">
-    </div>
-    <div class="field" id="f-gp">
-      <label>GP surgery name & town <span class="req">*</span></label>
-      <input type="text" id="gp" placeholder="e.g. Maidstone Medical Centre, Maidstone">
-      <div class="error-msg">Please enter your GP surgery</div>
-    </div>
-    <div class="field" id="f-apptType">
-      <label>Preferred appointment type <span class="req">*</span></label>
-      <div class="radio-group" id="apptTypeGroup">
-        <div class="radio-option" onclick="selectRadio('apptType','video',this)"><div class="radio-dot"></div> Video call</div>
-        <div class="radio-option" onclick="selectRadio('apptType','phone',this)"><div class="radio-dot"></div> Phone call</div>
-        <div class="radio-option" onclick="selectRadio('apptType','no_preference',this)"><div class="radio-dot"></div> No preference</div>
-      </div>
-      <div class="error-msg" id="apptType-error">Please select a preference</div>
-    </div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-next" onclick="goNext(0)">Continue →</button>
-    </div>
+    <div class="err" id="appt-err">Please select a preference</div>
   </div>
-
-  <!-- SECTION 1: Referral reason -->
-  <div class="section" id="sec-1">
-    <div class="section-label">Step 1 of 5</div>
-    <h2 class="section-title">Why are you seeing a dietitian?</h2>
-    <p class="section-sub">Select the option that best describes your main reason. This helps us tailor the rest of this form to you.</p>
-
-    <div class="field" id="f-reason">
-      <div class="radio-group" id="reasonGroup">
-        <div class="radio-option" onclick="selectRadio('reason','ibs',this)"><div class="radio-dot"></div> IBS / digestive symptoms</div>
-        <div class="radio-option" onclick="selectRadio('reason','weight',this)"><div class="radio-dot"></div> Weight management</div>
-        <div class="radio-option" onclick="selectRadio('reason','dementia',this)"><div class="radio-dot"></div> Dementia or Parkinson's nutrition</div>
-        <div class="radio-option" onclick="selectRadio('reason','coeliac',this)"><div class="radio-dot"></div> Coeliac disease</div>
-        <div class="radio-option" onclick="selectRadio('reason','malnutrition',this)"><div class="radio-dot"></div> Malnutrition / poor appetite / weight loss</div>
-        <div class="radio-option" onclick="selectRadio('reason','stroke',this)"><div class="radio-dot"></div> Stroke secondary prevention</div>
-        <div class="radio-option" onclick="selectRadio('reason','pancreatic',this)"><div class="radio-dot"></div> Pancreatic condition</div>
-        <div class="radio-option" onclick="selectRadio('reason','other',this)"><div class="radio-dot"></div> Other / not listed</div>
-      </div>
-      <div class="error-msg" id="reason-error">Please select a reason</div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(1)">← Back</button>
-      <button class="btn-next" onclick="goNext(1)">Continue →</button>
-    </div>
-  </div>
-
-  <!-- SECTION 2: Core medical -->
-  <div class="section" id="sec-2">
-    <div class="section-label">Step 2 of 5</div>
-    <h2 class="section-title">Your health background</h2>
-    <p class="section-sub">General medical information that helps your dietitian understand your full picture.</p>
-
-    <div class="field">
-      <label>Height</label>
-      <input type="text" id="height" placeholder="e.g. 5ft 8in or 173cm">
-    </div>
-    <div class="field">
-      <label>Current weight</label>
-      <input type="text" id="weight" placeholder="e.g. 14 stone or 89kg">
-    </div>
-    <div class="field">
-      <label>Do you have any diagnosed medical conditions?
-        <span class="hint">List all, even if unrelated to your dietitian referral</span>
-      </label>
-      <textarea id="conditions" placeholder="e.g. Type 2 diabetes, hypertension, anxiety…"></textarea>
-    </div>
-    <div class="field">
-      <label>Current medications and supplements
-        <span class="hint">Include prescribed medication, vitamins, and over-the-counter supplements</span>
-      </label>
-      <textarea id="meds" placeholder="e.g. Metformin 500mg, Vitamin D 1000IU, fish oil…"></textarea>
-    </div>
-    <div class="field">
-      <label>Any known food allergies or intolerances?</label>
-      <textarea id="allergies" placeholder="e.g. Peanut allergy (anaphylactic), lactose intolerant…"></textarea>
-    </div>
-    <div class="field">
-      <label>Have you seen a dietitian before?</label>
-      <div class="radio-group inline" id="seenDietGroup">
-        <div class="radio-option" onclick="selectRadio('seenDiet','yes',this)"><div class="radio-dot"></div> Yes</div>
-        <div class="radio-option" onclick="selectRadio('seenDiet','no',this)"><div class="radio-dot"></div> No</div>
-      </div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(2)">← Back</button>
-      <button class="btn-next" onclick="goNext(2)">Continue →</button>
-    </div>
-  </div>
-
-  <!-- SECTION 3: Condition-specific -->
-  <div class="section" id="sec-3">
-    <div class="section-label">Step 3 of 5</div>
-    <h2 class="section-title" id="sec3Title">About your condition</h2>
-    <p class="section-sub" id="sec3Sub">More detail about your specific reason for referral.</p>
-    <div id="conditionFields"></div>
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(3)">← Back</button>
-      <button class="btn-next" onclick="goNext(3)">Continue →</button>
-    </div>
-  </div>
-
-  <!-- SECTION 4: Diet & lifestyle -->
-  <div class="section" id="sec-4">
-    <div class="section-label">Step 4 of 5</div>
-    <h2 class="section-title">Diet & lifestyle</h2>
-    <p class="section-sub">A snapshot of your current eating patterns and daily life.</p>
-
-    <div class="field">
-      <label>Do you follow any specific diet or have dietary preferences?</label>
-      <div class="check-group" id="dietPrefGroup">
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','none')"><div class="check-box"></div> No specific diet</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','vegetarian')"><div class="check-box"></div> Vegetarian</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','vegan')"><div class="check-box"></div> Vegan</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','halal')"><div class="check-box"></div> Halal</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','kosher')"><div class="check-box"></div> Kosher</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','glutenfree')"><div class="check-box"></div> Gluten-free</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','dairyfree')"><div class="check-box"></div> Dairy-free</div>
-        <div class="check-option" onclick="toggleCheck(this,'dietPref','other')"><div class="check-box"></div> Other</div>
-      </div>
-    </div>
-    <div class="field">
-      <label>Briefly describe a typical day of eating
-        <span class="hint">Breakfast, lunch, dinner, snacks, drinks — whatever you'd normally have</span>
-      </label>
-      <textarea id="typicalDay" placeholder="e.g. Breakfast: toast and coffee. Lunch: sandwich. Dinner: pasta…" style="min-height:120px"></textarea>
-    </div>
-    <div class="field">
-      <label>How would you rate your current diet overall?</label>
-      <div class="scale-group" id="dietRatingGroup">
-        <button class="scale-btn" onclick="selectScale('dietRating',1,this)">1</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',2,this)">2</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',3,this)">3</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',4,this)">4</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',5,this)">5</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',6,this)">6</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',7,this)">7</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',8,this)">8</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',9,this)">9</button>
-        <button class="scale-btn" onclick="selectScale('dietRating',10,this)">10</button>
-      </div>
-      <div class="scale-labels"><span>Very poor</span><span>Excellent</span></div>
-    </div>
-    <div class="field">
-      <label>Physical activity level</label>
-      <div class="radio-group" id="activityGroup">
-        <div class="radio-option" onclick="selectRadio('activity','sedentary',this)"><div class="radio-dot"></div> Mostly sedentary (desk job, little exercise)</div>
-        <div class="radio-option" onclick="selectRadio('activity','light',this)"><div class="radio-dot"></div> Lightly active (walks, occasional exercise)</div>
-        <div class="radio-option" onclick="selectRadio('activity','moderate',this)"><div class="radio-dot"></div> Moderately active (exercise 3–4x per week)</div>
-        <div class="radio-option" onclick="selectRadio('activity','active',this)"><div class="radio-dot"></div> Very active (daily exercise or physical job)</div>
-      </div>
-    </div>
-    <div class="field">
-      <label>Alcohol intake</label>
-      <div class="radio-group inline" id="alcoholGroup">
-        <div class="radio-option" onclick="selectRadio('alcohol','none',this)"><div class="radio-dot"></div> None</div>
-        <div class="radio-option" onclick="selectRadio('alcohol','occasional',this)"><div class="radio-dot"></div> Occasional</div>
-        <div class="radio-option" onclick="selectRadio('alcohol','moderate',this)"><div class="radio-dot"></div> Moderate</div>
-        <div class="radio-option" onclick="selectRadio('alcohol','heavy',this)"><div class="radio-dot"></div> Heavy</div>
-      </div>
-    </div>
-    <div class="field">
-      <label>Smoking status</label>
-      <div class="radio-group inline" id="smokingGroup">
-        <div class="radio-option" onclick="selectRadio('smoking','never',this)"><div class="radio-dot"></div> Never</div>
-        <div class="radio-option" onclick="selectRadio('smoking','ex',this)"><div class="radio-dot"></div> Ex-smoker</div>
-        <div class="radio-option" onclick="selectRadio('smoking','current',this)"><div class="radio-dot"></div> Current</div>
-      </div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(4)">← Back</button>
-      <button class="btn-next" onclick="goNext(4)">Continue →</button>
-    </div>
-  </div>
-
-  <!-- SECTION 5: Goals & consent -->
-  <div class="section" id="sec-5">
-    <div class="section-label">Step 5 of 5</div>
-    <h2 class="section-title">Goals & consent</h2>
-    <p class="section-sub">Almost done — tell us what you're hoping to achieve, and confirm your consent.</p>
-
-    <div class="field">
-      <label>What are your main goals from working with a dietitian?
-        <span class="hint">Be as specific as you like</span>
-      </label>
-      <textarea id="goals" placeholder="e.g. I want to understand which foods trigger my symptoms and feel more confident eating out…" style="min-height:100px"></textarea>
-    </div>
-    <div class="field">
-      <label>How motivated do you feel to make dietary changes right now?</label>
-      <div class="scale-group" id="motivationGroup">
-        <button class="scale-btn" onclick="selectScale('motivation',1,this)">1</button>
-        <button class="scale-btn" onclick="selectScale('motivation',2,this)">2</button>
-        <button class="scale-btn" onclick="selectScale('motivation',3,this)">3</button>
-        <button class="scale-btn" onclick="selectScale('motivation',4,this)">4</button>
-        <button class="scale-btn" onclick="selectScale('motivation',5,this)">5</button>
-        <button class="scale-btn" onclick="selectScale('motivation',6,this)">6</button>
-        <button class="scale-btn" onclick="selectScale('motivation',7,this)">7</button>
-        <button class="scale-btn" onclick="selectScale('motivation',8,this)">8</button>
-        <button class="scale-btn" onclick="selectScale('motivation',9,this)">9</button>
-        <button class="scale-btn" onclick="selectScale('motivation',10,this)">10</button>
-      </div>
-      <div class="scale-labels"><span>Not at all</span><span>Extremely motivated</span></div>
-    </div>
-    <div class="field">
-      <label>Is there anything else you'd like your dietitian to know before your appointment?</label>
-      <textarea id="anything_else" placeholder="Any concerns, questions, or context that might be helpful…"></textarea>
-    </div>
-
-    <hr class="divider">
-
-    <div class="consent-box">
-      <strong>Data & privacy</strong><br>
-      The information you provide will be used solely to support your dietetic care at The GCD Clinic. Your data is handled in accordance with UK GDPR and will not be shared with third parties without your consent, except where required for your clinical care (e.g. correspondence with your GP).
-    </div>
-
-    <div class="field" id="f-consent">
-      <div class="check-option" onclick="toggleCheck(this,'consent','agreed')" id="consentCheck">
-        <div class="check-box"></div>
-        I consent to The GCD Clinic storing and processing my information for the purposes of my dietetic care
-      </div>
-      <div class="error-msg" id="consent-error">Please confirm your consent to continue</div>
-    </div>
-
-    <div class="nav-row">
-      <button class="btn-back" onclick="goBack(5)">← Back</button>
-      <button class="btn-next" onclick="submitForm()">Submit & generate summary →</button>
-    </div>
-  </div>
-
+  <div class="nav"><button class="btn-next" onclick="next(0)">Continue →</button></div>
 </div>
 
+<!-- 1: Reason -->
+<div class="section" id="s1">
+  <div class="step-label">Step 1 of 5</div>
+  <h2>Why are you seeing a dietitian?</h2>
+  <p class="sub">Select the option that best describes your main reason.</p>
+  <div class="field" id="f-reason">
+    <div class="radio-group" id="reasonGrp">
+      <div class="radio-opt" onclick="pick('reason','ibs',this)"><div class="dot"></div> IBS / digestive symptoms</div>
+      <div class="radio-opt" onclick="pick('reason','weight',this)"><div class="dot"></div> Weight management</div>
+      <div class="radio-opt" onclick="pick('reason','dementia',this)"><div class="dot"></div> Dementia or Parkinson's nutrition</div>
+      <div class="radio-opt" onclick="pick('reason','coeliac',this)"><div class="dot"></div> Coeliac disease</div>
+      <div class="radio-opt" onclick="pick('reason','malnutrition',this)"><div class="dot"></div> Malnutrition / poor appetite / weight loss</div>
+      <div class="radio-opt" onclick="pick('reason','stroke',this)"><div class="dot"></div> Stroke secondary prevention</div>
+      <div class="radio-opt" onclick="pick('reason','pancreatic',this)"><div class="dot"></div> Pancreatic condition</div>
+      <div class="radio-opt" onclick="pick('reason','other',this)"><div class="dot"></div> Other / not listed</div>
+    </div>
+    <div class="err" id="reason-err">Please select a reason</div>
+  </div>
+  <div class="nav"><button class="btn-back" onclick="back(1)">← Back</button><button class="btn-next" onclick="next(1)">Continue →</button></div>
+</div>
+
+<!-- 2: Medical -->
+<div class="section" id="s2">
+  <div class="step-label">Step 2 of 5</div>
+  <h2>Your health background</h2>
+  <p class="sub">General medical information that helps your dietitian understand the full picture.</p>
+  <div class="field"><label>Height</label><input type="text" id="height" placeholder="e.g. 5ft 8in or 173cm"></div>
+  <div class="field"><label>Current weight</label><input type="text" id="weight" placeholder="e.g. 14 stone or 89kg"></div>
+  <div class="field"><label>Diagnosed medical conditions<span class="hint">List all, even if unrelated to your referral</span></label><textarea id="conditions" placeholder="e.g. Type 2 diabetes, hypertension…"></textarea></div>
+  <div class="field"><label>Current medications and supplements<span class="hint">Include prescribed meds, vitamins, OTC supplements</span></label><textarea id="meds" placeholder="e.g. Metformin 500mg, Vitamin D 1000IU…"></textarea></div>
+  <div class="field"><label>Food allergies or intolerances</label><textarea id="allergies" placeholder="e.g. Peanut allergy, lactose intolerant…"></textarea></div>
+  <div class="field"><label>Have you seen a dietitian before?</label>
+    <div class="radio-group row" id="seenGrp">
+      <div class="radio-opt" onclick="pick('seen','yes',this)"><div class="dot"></div> Yes</div>
+      <div class="radio-opt" onclick="pick('seen','no',this)"><div class="dot"></div> No</div>
+    </div>
+  </div>
+  <div class="nav"><button class="btn-back" onclick="back(2)">← Back</button><button class="btn-next" onclick="next(2)">Continue →</button></div>
+</div>
+
+<!-- 3: Condition specific -->
+<div class="section" id="s3">
+  <div class="step-label">Step 3 of 5</div>
+  <h2 id="s3title">About your condition</h2>
+  <p class="sub" id="s3sub">More detail about your specific reason for referral.</p>
+  <div id="condFields"></div>
+  <div class="nav"><button class="btn-back" onclick="back(3)">← Back</button><button class="btn-next" onclick="next(3)">Continue →</button></div>
+</div>
+
+<!-- 4: Diet & lifestyle -->
+<div class="section" id="s4">
+  <div class="step-label">Step 4 of 5</div>
+  <h2>Diet &amp; lifestyle</h2>
+  <p class="sub">A snapshot of your current eating patterns and daily life.</p>
+  <div class="field"><label>Dietary preferences</label>
+    <div class="check-group" id="dietGrp">
+      <div class="check-opt" onclick="chk(this,'diet','none')"><div class="box"></div> No specific diet</div>
+      <div class="check-opt" onclick="chk(this,'diet','vegetarian')"><div class="box"></div> Vegetarian</div>
+      <div class="check-opt" onclick="chk(this,'diet','vegan')"><div class="box"></div> Vegan</div>
+      <div class="check-opt" onclick="chk(this,'diet','halal')"><div class="box"></div> Halal</div>
+      <div class="check-opt" onclick="chk(this,'diet','kosher')"><div class="box"></div> Kosher</div>
+      <div class="check-opt" onclick="chk(this,'diet','glutenfree')"><div class="box"></div> Gluten-free</div>
+      <div class="check-opt" onclick="chk(this,'diet','dairyfree')"><div class="box"></div> Dairy-free</div>
+      <div class="check-opt" onclick="chk(this,'diet','other')"><div class="box"></div> Other</div>
+    </div>
+  </div>
+  <div class="field"><label>Typical day of eating<span class="hint">Breakfast, lunch, dinner, snacks, drinks</span></label><textarea id="typDay" placeholder="e.g. Breakfast: toast and coffee. Lunch: sandwich…" style="min-height:110px"></textarea></div>
+  <div class="field"><label>How would you rate your current diet? (1–10)</label>
+    <div class="scale-row" id="dietScaleGrp">
+      <button class="scale-btn" onclick="scl('dietScore',1,this)">1</button><button class="scale-btn" onclick="scl('dietScore',2,this)">2</button><button class="scale-btn" onclick="scl('dietScore',3,this)">3</button><button class="scale-btn" onclick="scl('dietScore',4,this)">4</button><button class="scale-btn" onclick="scl('dietScore',5,this)">5</button><button class="scale-btn" onclick="scl('dietScore',6,this)">6</button><button class="scale-btn" onclick="scl('dietScore',7,this)">7</button><button class="scale-btn" onclick="scl('dietScore',8,this)">8</button><button class="scale-btn" onclick="scl('dietScore',9,this)">9</button><button class="scale-btn" onclick="scl('dietScore',10,this)">10</button>
+    </div>
+    <div class="scale-labels"><span>Very poor</span><span>Excellent</span></div>
+  </div>
+  <div class="field"><label>Physical activity level</label>
+    <div class="radio-group" id="actGrp">
+      <div class="radio-opt" onclick="pick('act','sedentary',this)"><div class="dot"></div> Mostly sedentary</div>
+      <div class="radio-opt" onclick="pick('act','light',this)"><div class="dot"></div> Lightly active (walks, occasional exercise)</div>
+      <div class="radio-opt" onclick="pick('act','moderate',this)"><div class="dot"></div> Moderately active (3–4x per week)</div>
+      <div class="radio-opt" onclick="pick('act','active',this)"><div class="dot"></div> Very active (daily exercise or physical job)</div>
+    </div>
+  </div>
+  <div class="field"><label>Alcohol intake</label>
+    <div class="radio-group row" id="alcGrp">
+      <div class="radio-opt" onclick="pick('alc','none',this)"><div class="dot"></div> None</div>
+      <div class="radio-opt" onclick="pick('alc','occasional',this)"><div class="dot"></div> Occasional</div>
+      <div class="radio-opt" onclick="pick('alc','moderate',this)"><div class="dot"></div> Moderate</div>
+      <div class="radio-opt" onclick="pick('alc','heavy',this)"><div class="dot"></div> Heavy</div>
+    </div>
+  </div>
+  <div class="field"><label>Smoking status</label>
+    <div class="radio-group row" id="smokeGrp">
+      <div class="radio-opt" onclick="pick('smoke','never',this)"><div class="dot"></div> Never</div>
+      <div class="radio-opt" onclick="pick('smoke','ex',this)"><div class="dot"></div> Ex-smoker</div>
+      <div class="radio-opt" onclick="pick('smoke','current',this)"><div class="dot"></div> Current</div>
+    </div>
+  </div>
+  <div class="nav"><button class="btn-back" onclick="back(4)">← Back</button><button class="btn-next" onclick="next(4)">Continue →</button></div>
+</div>
+
+<!-- 5: Goals & consent -->
+<div class="section" id="s5">
+  <div class="step-label">Step 5 of 5</div>
+  <h2>Goals &amp; consent</h2>
+  <p class="sub">Almost done — tell us what you're hoping to achieve and confirm your consent.</p>
+  <div class="field"><label>What are your main goals?<span class="hint">Be as specific as you like</span></label><textarea id="goals" placeholder="e.g. I want to understand which foods trigger my symptoms…" style="min-height:96px"></textarea></div>
+  <div class="field"><label>How motivated are you to make changes right now? (1–10)</label>
+    <div class="scale-row" id="motivGrp">
+      <button class="scale-btn" onclick="scl('motiv',1,this)">1</button><button class="scale-btn" onclick="scl('motiv',2,this)">2</button><button class="scale-btn" onclick="scl('motiv',3,this)">3</button><button class="scale-btn" onclick="scl('motiv',4,this)">4</button><button class="scale-btn" onclick="scl('motiv',5,this)">5</button><button class="scale-btn" onclick="scl('motiv',6,this)">6</button><button class="scale-btn" onclick="scl('motiv',7,this)">7</button><button class="scale-btn" onclick="scl('motiv',8,this)">8</button><button class="scale-btn" onclick="scl('motiv',9,this)">9</button><button class="scale-btn" onclick="scl('motiv',10,this)">10</button>
+    </div>
+    <div class="scale-labels"><span>Not at all</span><span>Extremely motivated</span></div>
+  </div>
+  <div class="field"><label>Anything else you'd like us to know?</label><textarea id="extra" placeholder="Any concerns, questions, or context…"></textarea></div>
+  <hr class="divider">
+  <div class="consent-box"><strong>Data &amp; privacy</strong><br>Your information is used solely to support your dietetic care at The GCD Clinic. Data is handled in accordance with UK GDPR and will not be shared without your consent, except where required for your clinical care.</div>
+  <div class="field" id="f-consent">
+    <div class="check-opt" id="consentBtn" onclick="chk(this,'consent','yes')"><div class="box"></div> I consent to The GCD Clinic storing and processing my information for the purposes of my dietetic care</div>
+    <div class="err" id="consent-err">Please confirm your consent to continue</div>
+  </div>
+  <div class="nav"><button class="btn-back" onclick="back(5)">← Back</button><button class="btn-next" onclick="submit()">Submit →</button></div>
+</div>
+
+</div><!-- /container -->
+
 <script>
-const state = { currentSection: 0, totalSections: 6, values: {} };
+var D = {};
+var cur = 0;
 
-function updateProgress() {
-  document.getElementById('progressFill').style.width = (state.currentSection / (state.totalSections - 1)) * 100 + '%';
+function prog() {
+  document.getElementById('prog').style.width = (cur / 5 * 100) + '%';
 }
 
-function showSection(n) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('sec-' + n).classList.add('active');
-  state.currentSection = n;
-  updateProgress();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (n === 3) buildConditionFields();
+function show(n) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('s'+n).classList.add('active');
+  cur = n;
+  prog();
+  window.scrollTo(0,0);
+  if (n===3) buildCond();
 }
 
-function goNext(from) { if (!validate(from)) return; collectSection(from); showSection(from + 1); }
-function goBack(from) { showSection(from - 1); }
+function next(n) {
+  if (!ok(n)) return;
+  collect(n);
+  show(n+1);
+}
 
-function validate(section) {
-  let ok = true;
-  if (section === 0) {
-    ok = requireField('name','f-name') && ok;
-    ok = requireField('dob','f-dob') && ok;
-    ok = requireEmail('email','f-email') && ok;
-    ok = requireField('phone','f-phone') && ok;
-    ok = requireField('gp','f-gp') && ok;
-    if (!state.values.apptType) { document.getElementById('apptType-error').style.display='block'; ok=false; }
-    else { document.getElementById('apptType-error').style.display='none'; }
+function back(n) { show(n-1); }
+
+function g(id) { var el=document.getElementById(id); return el?el.value.trim():''; }
+
+function ok(n) {
+  var pass = true;
+  if (n===0) {
+    pass = req('name','f-name') && pass;
+    pass = req('dob','f-dob') && pass;
+    pass = email('email','f-email') && pass;
+    pass = req('phone','f-phone') && pass;
+    pass = req('gp','f-gp') && pass;
+    if (!D.appt) { document.getElementById('appt-err').style.display='block'; pass=false; }
+    else { document.getElementById('appt-err').style.display='none'; }
   }
-  if (section === 1) {
-    if (!state.values.reason) { document.getElementById('reason-error').style.display='block'; ok=false; }
-    else { document.getElementById('reason-error').style.display='none'; }
+  if (n===1) {
+    if (!D.reason) { document.getElementById('reason-err').style.display='block'; pass=false; }
+    else { document.getElementById('reason-err').style.display='none'; }
   }
-  if (section === 5) {
-    if (!state.values.consent_agreed) { document.getElementById('consent-error').style.display='block'; ok=false; }
-    else { document.getElementById('consent-error').style.display='none'; }
+  if (n===5) {
+    if (!D.consent) { document.getElementById('consent-err').style.display='block'; pass=false; }
+    else { document.getElementById('consent-err').style.display='none'; }
   }
-  return ok;
+  return pass;
 }
 
-function requireField(id, fieldId) {
-  const val = document.getElementById(id)?.value?.trim();
-  const field = document.getElementById(fieldId);
-  if (!val) { field?.classList.add('error'); return false; }
-  field?.classList.remove('error'); return true;
-}
-function requireEmail(id, fieldId) {
-  const val = document.getElementById(id)?.value?.trim();
-  const field = document.getElementById(fieldId);
-  const ok = val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-  if (!ok) { field?.classList.add('error'); return false; }
-  field?.classList.remove('error'); return true;
+function req(id, fid) {
+  var v=g(id), f=document.getElementById(fid);
+  if (!v) { if(f) f.classList.add('bad'); return false; }
+  if(f) f.classList.remove('bad'); return true;
 }
 
-function selectRadio(key, value, el) {
-  el.closest('.radio-group').querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  state.values[key] = value;
-}
-function toggleCheck(el, key, value) {
-  el.classList.toggle('selected');
-  if (!state.values[key]) state.values[key] = [];
-  if (el.classList.contains('selected')) { if (!state.values[key].includes(value)) state.values[key].push(value); }
-  else { state.values[key] = state.values[key].filter(v => v !== value); }
-  if (key === 'consent' && value === 'agreed') state.values.consent_agreed = el.classList.contains('selected');
-}
-function selectScale(key, value, el) {
-  el.closest('.scale-group').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  state.values[key] = value;
+function email(id, fid) {
+  var v=g(id), f=document.getElementById(fid);
+  var ok = v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  if (!ok) { if(f) f.classList.add('bad'); return false; }
+  if(f) f.classList.remove('bad'); return true;
 }
 
-function collectSection(n) {
-  if (n === 0) { state.values.name=v('name'); state.values.dob=v('dob'); state.values.email=v('email'); state.values.phone=v('phone'); state.values.nhs=v('nhs'); state.values.gp=v('gp'); }
-  if (n === 2) { state.values.height=v('height'); state.values.weight=v('weight'); state.values.conditions=v('conditions'); state.values.meds=v('meds'); state.values.allergies=v('allergies'); }
-  if (n === 3) collectConditionFields();
-  if (n === 4) { state.values.typicalDay=v('typicalDay'); }
-  if (n === 5) { state.values.goals=v('goals'); state.values.anything_else=v('anything_else'); }
+function pick(key, val, el) {
+  el.closest('.radio-group').querySelectorAll('.radio-opt').forEach(function(o){ o.classList.remove('on'); });
+  el.classList.add('on');
+  D[key] = val;
 }
-function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
 
-const conditionConfigs = {
-  ibs: { title:'About your IBS', sub:'Help us understand your digestive symptoms in more detail.', fields:[
-    {id:'ibs_duration',label:'How long have you had digestive symptoms?',type:'text',placeholder:'e.g. 3 years'},
-    {id:'ibs_symptoms',label:'Which symptoms do you experience?',type:'checks',options:['Bloating','Abdominal pain/cramping','Constipation','Diarrhoea','Alternating bowel habit','Excess wind','Nausea','Reflux']},
-    {id:'ibs_triggers',label:'Have you noticed any food or lifestyle triggers?',type:'textarea',placeholder:'e.g. wheat, onions, stress, eating quickly…'},
-    {id:'ibs_diagnosis',label:'Have you been formally diagnosed with IBS by a doctor?',type:'radio',options:['Yes','No','Not sure']},
-    {id:'ibs_investigations',label:'Have you had any investigations (colonoscopy, blood tests, SIBO breath test)?',type:'textarea',placeholder:'List any tests and approximate dates…'},
-    {id:'ibs_lowfodmap',label:'Have you tried a low FODMAP diet before?',type:'radio',options:['Yes, with support','Yes, self-guided','No']},
-    {id:'ibs_impact',label:'How much does your IBS affect your daily life? (1–10)',type:'scale'}
+function chk(el, key, val) {
+  el.classList.toggle('on');
+  if (key==='consent') { D.consent = el.classList.contains('on'); return; }
+  if (!D[key]) D[key]=[];
+  if (el.classList.contains('on')) { if(D[key].indexOf(val)<0) D[key].push(val); }
+  else { D[key]=D[key].filter(function(v){return v!==val;}); }
+}
+
+function scl(key, val, el) {
+  el.closest('.scale-row').querySelectorAll('.scale-btn').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  D[key] = val;
+}
+
+function collect(n) {
+  if (n===0) { D.name=g('name'); D.dob=g('dob'); D.email=g('email'); D.phone=g('phone'); D.nhs=g('nhs'); D.gp=g('gp'); }
+  if (n===2) { D.height=g('height'); D.weight=g('weight'); D.conditions=g('conditions'); D.meds=g('meds'); D.allergies=g('allergies'); }
+  if (n===3) { collectCond(); }
+  if (n===4) { D.typDay=g('typDay'); }
+  if (n===5) { D.goals=g('goals'); D.extra=g('extra'); }
+}
+
+var configs = {
+  ibs: { title:'About your IBS', sub:'Help us understand your digestive symptoms.', fields:[
+    {id:'ibs_dur',label:'How long have you had symptoms?',type:'text',ph:'e.g. 3 years'},
+    {id:'ibs_sym',label:'Which symptoms do you experience?',type:'checks',opts:['Bloating','Abdominal pain','Constipation','Diarrhoea','Alternating bowel habit','Excess wind','Nausea','Reflux']},
+    {id:'ibs_trig',label:'Any food or lifestyle triggers?',type:'textarea',ph:'e.g. wheat, onions, stress…'},
+    {id:'ibs_dx',label:'Formally diagnosed with IBS by a doctor?',type:'radio',opts:['Yes','No','Not sure']},
+    {id:'ibs_inv',label:'Any investigations (colonoscopy, blood tests, SIBO test)?',type:'textarea',ph:'List tests and dates…'},
+    {id:'ibs_fodmap',label:'Have you tried a low FODMAP diet?',type:'radio',opts:['Yes, with support','Yes, self-guided','No']},
+    {id:'ibs_impact',label:'How much does IBS affect your daily life? (1–10)',type:'scale'}
   ]},
-  weight: { title:'About your weight management goals', sub:'Understanding your weight history helps us support you effectively.', fields:[
-    {id:'wt_goal',label:'What is your primary goal?',type:'radio',options:['Lose weight','Improve body composition','Maintain current weight','Not sure yet']},
-    {id:'wt_history',label:'Briefly describe your weight history',type:'textarea',placeholder:'e.g. Weight has gradually increased since my 30s, tried multiple diets…'},
-    {id:'wt_diets',label:'What diets or approaches have you tried previously?',type:'textarea',placeholder:'e.g. calorie counting, keto, slimming clubs…'},
-    {id:'wt_barriers',label:'What do you feel are the main barriers to managing your weight?',type:'textarea',placeholder:'e.g. emotional eating, time, knowledge, stress…'},
-    {id:'wt_medical',label:'Do you have any conditions that affect your weight (e.g. PCOS, hypothyroidism, insulin resistance)?',type:'textarea',placeholder:'e.g. PCOS, hypothyroidism, insulin resistance…'},
-    {id:'wt_bariatric',label:'Have you had any bariatric surgery?',type:'radio',options:['Yes — gastric sleeve','Yes — gastric bypass','Yes — gastric band','Yes — other','No']},
-    {id:'wt_meds',label:'Are you currently taking or have you been offered weight loss medication (e.g. Mounjaro, Wegovy)?',type:'radio',options:['Yes, currently taking','Yes, been offered but not started','No']}
+  weight: { title:'About your weight management goals', sub:'Understanding your weight history helps us support you.', fields:[
+    {id:'wt_goal',label:'What is your primary goal?',type:'radio',opts:['Lose weight','Improve body composition','Maintain current weight','Not sure yet']},
+    {id:'wt_hist',label:'Briefly describe your weight history',type:'textarea',ph:'e.g. Weight has gradually increased since my 30s…'},
+    {id:'wt_diets',label:'What diets or approaches have you tried?',type:'textarea',ph:'e.g. calorie counting, keto, slimming clubs…'},
+    {id:'wt_bar',label:'Main barriers to managing your weight?',type:'textarea',ph:'e.g. emotional eating, time, stress…'},
+    {id:'wt_med',label:'Conditions that affect your weight (e.g. PCOS, hypothyroidism, insulin resistance)?',type:'textarea',ph:'e.g. PCOS, hypothyroidism…'},
+    {id:'wt_bari',label:'Have you had any bariatric surgery?',type:'radio',opts:['Yes — gastric sleeve','Yes — gastric bypass','Yes — gastric band','Yes — other','No']},
+    {id:'wt_meds',label:'Taking or been offered weight loss medication (e.g. Mounjaro, Wegovy)?',type:'radio',opts:['Yes, currently taking','Yes, been offered but not started','No']}
   ]},
-  dementia: { title:'About nutritional needs', sub:'This section may be completed by a carer or family member if appropriate.', fields:[
-    {id:'dem_condition',label:'Condition',type:'radio',options:["Alzheimer's disease","Vascular dementia","Lewy body dementia","Parkinson's disease","Parkinson's with dementia","Other / not yet diagnosed"]},
-    {id:'dem_stage',label:'Current stage / level of independence with eating',type:'radio',options:['Independent — eats without assistance','Needs prompting or encouragement','Needs physical assistance with eating','Fully dependent — requires full support at mealtimes']},
-    {id:'dem_weight',label:'Has there been unintentional weight loss recently?',type:'radio',options:['Yes — significant (>5kg)','Yes — some','No','Unsure']},
-    {id:'dem_swallow',label:'Are there any swallowing difficulties (dysphagia)?',type:'radio',options:['Yes — assessed by SLT','Yes — suspected but not assessed','No']},
-    {id:'dem_texture',label:'Is a modified texture diet required?',type:'radio',options:['Yes — specify below','No','Unsure']},
-    {id:'dem_texture_detail',label:'If modified texture required, please specify (e.g. IDDSI level)',type:'text',placeholder:'e.g. IDDSI Level 4 — puréed'},
-    {id:'dem_appetite',label:'Describe current appetite and eating patterns',type:'textarea',placeholder:'e.g. Refuses breakfast, better at lunch, favours sweet foods…'},
-    {id:'dem_supplements',label:'Are any oral nutritional supplements (ONS) currently prescribed?',type:'text',placeholder:'e.g. Fortisip Compact 2x daily'}
+  dementia: { title:'About nutritional needs', sub:'This section may be completed by a carer or family member.', fields:[
+    {id:'dem_cond',label:'Condition',type:'radio',opts:["Alzheimer's disease","Vascular dementia","Lewy body dementia","Parkinson's disease","Parkinson's with dementia","Other / not yet diagnosed"]},
+    {id:'dem_stage',label:'Level of independence with eating',type:'radio',opts:['Independent','Needs prompting','Needs physical assistance','Fully dependent']},
+    {id:'dem_wt',label:'Unintentional weight loss recently?',type:'radio',opts:['Yes — significant (>5kg)','Yes — some','No','Unsure']},
+    {id:'dem_sw',label:'Swallowing difficulties (dysphagia)?',type:'radio',opts:['Yes — assessed by SLT','Yes — suspected','No']},
+    {id:'dem_tex',label:'Modified texture diet required?',type:'radio',opts:['Yes — specify below','No','Unsure']},
+    {id:'dem_texd',label:'If yes, please specify (e.g. IDDSI level)',type:'text',ph:'e.g. IDDSI Level 4 — puréed'},
+    {id:'dem_app',label:'Describe current appetite and eating patterns',type:'textarea',ph:'e.g. Refuses breakfast, favours sweet foods…'},
+    {id:'dem_ons',label:'Oral nutritional supplements currently prescribed?',type:'text',ph:'e.g. Fortisip Compact 2x daily'}
   ]},
-  coeliac: { title:'About your coeliac disease', sub:'Help us understand your diagnosis and current management.', fields:[
-    {id:'coe_diagnosed',label:'Have you been formally diagnosed with coeliac disease?',type:'radio',options:['Yes — biopsy confirmed','Yes — blood test only','Awaiting diagnosis','Non-coeliac gluten sensitivity','Unsure']},
-    {id:'coe_duration',label:'How long have you been on a gluten-free diet?',type:'text',placeholder:'e.g. 2 years, or not yet started'},
-    {id:'coe_adherence',label:'How strictly do you follow a gluten-free diet?',type:'radio',options:['Strictly — zero intentional gluten','Mostly — occasional slips','Partially — find it difficult to maintain']},
-    {id:'coe_symptoms',label:'Do you still experience symptoms despite following a gluten-free diet?',type:'textarea',placeholder:'Describe ongoing symptoms if any…'},
-    {id:'coe_bloods',label:'When were your coeliac antibodies (tTG IgA) last checked?',type:'text',placeholder:'e.g. January 2024'},
-    {id:'coe_deficiencies',label:'Have you been told you have any nutritional deficiencies?',type:'textarea',placeholder:'e.g. low iron, B12, calcium, vitamin D…'}
+  coeliac: { title:'About your coeliac disease', sub:'Help us understand your diagnosis and management.', fields:[
+    {id:'coe_dx',label:'Formally diagnosed?',type:'radio',opts:['Yes — biopsy confirmed','Yes — blood test only','Awaiting diagnosis','Non-coeliac gluten sensitivity','Unsure']},
+    {id:'coe_dur',label:'How long on a gluten-free diet?',type:'text',ph:'e.g. 2 years'},
+    {id:'coe_adh',label:'How strictly do you follow a gluten-free diet?',type:'radio',opts:['Strictly — zero intentional gluten','Mostly — occasional slips','Partially']},
+    {id:'coe_sym',label:'Still experiencing symptoms on gluten-free diet?',type:'textarea',ph:'Describe ongoing symptoms…'},
+    {id:'coe_bld',label:'When were coeliac antibodies (tTG IgA) last checked?',type:'text',ph:'e.g. January 2024'},
+    {id:'coe_def',label:'Any nutritional deficiencies identified?',type:'textarea',ph:'e.g. low iron, B12, vitamin D…'}
   ]},
-  malnutrition: { title:'About nutritional status', sub:'This section helps us assess risk and support recovery.', fields:[
-    {id:'mal_loss',label:'How much weight have you lost, and over what period?',type:'text',placeholder:'e.g. 8kg over 3 months'},
-    {id:'mal_appetite',label:'Current appetite',type:'radio',options:['Normal','Reduced','Very poor — eating very little','Almost no appetite']},
-    {id:'mal_cause',label:'What do you think is causing poor appetite or weight loss?',type:'textarea',placeholder:'e.g. cancer treatment, swallowing difficulties, depression, poor mobility…'},
-    {id:'mal_ons',label:'Are you currently taking any oral nutritional supplements?',type:'text',placeholder:'e.g. Ensure Plus 2x daily'},
-    {id:'mal_food',label:'What foods are you currently able to eat and tolerate?',type:'textarea',placeholder:'e.g. soft foods only, liquids, limited to a few foods…'}
+  malnutrition: { title:'About nutritional status', sub:'This helps us assess risk and support recovery.', fields:[
+    {id:'mal_loss',label:'How much weight lost, over what period?',type:'text',ph:'e.g. 8kg over 3 months'},
+    {id:'mal_app',label:'Current appetite',type:'radio',opts:['Normal','Reduced','Very poor','Almost none']},
+    {id:'mal_cause',label:'What do you think is causing weight loss or poor appetite?',type:'textarea',ph:'e.g. cancer treatment, poor mobility…'},
+    {id:'mal_ons',label:'Currently taking oral nutritional supplements?',type:'text',ph:'e.g. Ensure Plus 2x daily'},
+    {id:'mal_food',label:'What foods can you currently eat and tolerate?',type:'textarea',ph:'e.g. soft foods only, limited range…'}
   ]},
-  stroke: { title:'About stroke secondary prevention', sub:'Dietary changes play a key role in reducing future stroke risk.', fields:[
-    {id:'str_date',label:'When did your stroke or TIA occur?',type:'text',placeholder:'e.g. March 2023'},
-    {id:'str_type',label:'Type of stroke',type:'radio',options:['Ischaemic stroke','Haemorrhagic stroke','TIA (mini-stroke)','Not sure']},
-    {id:'str_risk',label:'What cardiovascular risk factors have you been told you have?',type:'checks',options:['High blood pressure','High cholesterol','Atrial fibrillation','Type 2 diabetes','Obesity','Smoking','Family history']},
-    {id:'str_bp',label:'Current blood pressure (if known)',type:'text',placeholder:'e.g. 145/90 mmHg'},
-    {id:'str_chol',label:'Most recent cholesterol result (if known)',type:'text',placeholder:'e.g. Total 5.8, LDL 3.2'},
-    {id:'str_swallow',label:'Are there any post-stroke swallowing difficulties?',type:'radio',options:['Yes','No','Resolved']},
-    {id:'str_meds',label:'Current cardiovascular medications',type:'textarea',placeholder:'e.g. aspirin, atorvastatin, ramipril, apixaban…'}
+  stroke: { title:'About stroke secondary prevention', sub:'Diet plays a key role in reducing future stroke risk.', fields:[
+    {id:'str_date',label:'When did your stroke or TIA occur?',type:'text',ph:'e.g. March 2023'},
+    {id:'str_type',label:'Type of stroke',type:'radio',opts:['Ischaemic stroke','Haemorrhagic stroke','TIA (mini-stroke)','Not sure']},
+    {id:'str_risk',label:'Cardiovascular risk factors?',type:'checks',opts:['High blood pressure','High cholesterol','Atrial fibrillation','Type 2 diabetes','Obesity','Smoking','Family history']},
+    {id:'str_bp',label:'Current blood pressure (if known)',type:'text',ph:'e.g. 145/90 mmHg'},
+    {id:'str_chol',label:'Most recent cholesterol result (if known)',type:'text',ph:'e.g. Total 5.8, LDL 3.2'},
+    {id:'str_sw',label:'Post-stroke swallowing difficulties?',type:'radio',opts:['Yes','No','Resolved']},
+    {id:'str_meds',label:'Current cardiovascular medications',type:'textarea',ph:'e.g. aspirin, atorvastatin, ramipril…'}
   ]},
-  pancreatic: { title:'About your pancreatic condition', sub:'Pancreatic conditions significantly affect nutrition and digestion.', fields:[
-    {id:'pan_condition',label:'Which condition do you have?',type:'radio',options:['Chronic pancreatitis','Acute pancreatitis (recent)','Pancreatic cancer','Post-Whipple procedure','Exocrine pancreatic insufficiency (EPI)','Other']},
-    {id:'pan_pert',label:'Are you prescribed pancreatic enzyme replacement therapy (PERT)?',type:'radio',options:['Yes — Creon','Yes — other PERT','No','Not sure']},
-    {id:'pan_pert_dose',label:'If taking PERT, what dose and when?',type:'text',placeholder:'e.g. Creon 25,000 — 3 with main meals, 1–2 with snacks'},
-    {id:'pan_symptoms',label:'Current digestive symptoms',type:'checks',options:['Steatorrhoea (oily/floating stools)','Abdominal pain after eating','Bloating','Nausea','Significant weight loss','Diabetes-related symptoms']},
-    {id:'pan_fat',label:'Have you been advised to restrict fat intake?',type:'radio',options:['Yes','No','Unsure']},
-    {id:'pan_diabetes',label:'Do you have pancreatogenic (type 3c) diabetes or blood sugar issues?',type:'radio',options:['Yes','No','Under investigation']}
+  pancreatic: { title:'About your pancreatic condition', sub:'Pancreatic conditions significantly affect nutrition.', fields:[
+    {id:'pan_cond',label:'Which condition?',type:'radio',opts:['Chronic pancreatitis','Acute pancreatitis','Pancreatic cancer','Post-Whipple','Exocrine pancreatic insufficiency (EPI)','Other']},
+    {id:'pan_pert',label:'Prescribed pancreatic enzyme replacement (PERT)?',type:'radio',opts:['Yes — Creon','Yes — other PERT','No','Not sure']},
+    {id:'pan_dose',label:'If taking PERT, what dose and when?',type:'text',ph:'e.g. Creon 25,000 — 3 with meals'},
+    {id:'pan_sym',label:'Current digestive symptoms',type:'checks',opts:['Steatorrhoea (oily stools)','Abdominal pain after eating','Bloating','Nausea','Significant weight loss','Diabetes symptoms']},
+    {id:'pan_fat',label:'Advised to restrict fat intake?',type:'radio',opts:['Yes','No','Unsure']},
+    {id:'pan_diab',label:'Pancreatogenic (type 3c) diabetes or blood sugar issues?',type:'radio',opts:['Yes','No','Under investigation']}
   ]},
-  other: { title:'About your referral', sub:'Tell us more about what has brought you to The GCD Clinic.', fields:[
-    {id:'oth_reason',label:'Please describe your reason for referral in your own words',type:'textarea',placeholder:'Tell us as much or as little as you like…'},
-    {id:'oth_referred',label:'Were you referred by a healthcare professional?',type:'radio',options:['Yes — GP','Yes — hospital consultant','Yes — other','No — self-referred']},
-    {id:'oth_history',label:'Any relevant medical or nutritional history',type:'textarea',placeholder:''}
+  other: { title:'About your referral', sub:'Tell us more about what brought you to The GCD Clinic.', fields:[
+    {id:'oth_reason',label:'Describe your reason for referral',type:'textarea',ph:'Tell us as much as you like…'},
+    {id:'oth_ref',label:'Referred by a healthcare professional?',type:'radio',opts:['Yes — GP','Yes — hospital consultant','Yes — other','No — self-referred']},
+    {id:'oth_hist',label:'Any relevant medical or nutritional history',type:'textarea',ph:''}
   ]}
 };
 
-function buildConditionFields() {
-  const reason = state.values.reason || 'other';
-  const config = conditionConfigs[reason] || conditionConfigs.other;
-  document.getElementById('sec3Title').textContent = config.title;
-  document.getElementById('sec3Sub').textContent = config.sub;
-  const container = document.getElementById('conditionFields');
-  container.innerHTML = '';
-  config.fields.forEach(f => {
-    const div = document.createElement('div');
-    div.className = 'field'; div.id = 'f-' + f.id;
-    if (f.type === 'text' || f.type === 'date') {
-      div.innerHTML = `<label>${f.label}</label><input type="${f.type}" id="${f.id}" placeholder="${f.placeholder||''}">`;
-    } else if (f.type === 'textarea') {
-      div.innerHTML = `<label>${f.label}</label><textarea id="${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
-    } else if (f.type === 'radio') {
-      const opts = f.options.map(o=>`<div class="radio-option" onclick="selectRadio('${f.id}','${o.replace(/'/g,"\\'")}',this)"><div class="radio-dot"></div> ${o}</div>`).join('');
-      div.innerHTML = `<label>${f.label}</label><div class="radio-group">${opts}</div>`;
-    } else if (f.type === 'checks') {
-      const opts = f.options.map(o=>`<div class="check-option" onclick="toggleCheck(this,'${f.id}','${o.replace(/'/g,"\\'")}')"><div class="check-box"></div> ${o}</div>`).join('');
-      div.innerHTML = `<label>${f.label}</label><div class="check-group">${opts}</div>`;
-    } else if (f.type === 'scale') {
-      const btns = [1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="scale-btn" onclick="selectScale('${f.id}',${n},this)">${n}</button>`).join('');
-      div.innerHTML = `<label>${f.label}</label><div class="scale-group">${btns}</div><div class="scale-labels"><span>Not at all</span><span>Severely</span></div>`;
+function buildCond() {
+  var r = D.reason || 'other';
+  var c = configs[r] || configs.other;
+  document.getElementById('s3title').textContent = c.title;
+  document.getElementById('s3sub').textContent = c.sub;
+  var cont = document.getElementById('condFields');
+  cont.innerHTML = '';
+  c.fields.forEach(function(f) {
+    var d = document.createElement('div');
+    d.className = 'field';
+    if (f.type==='text') {
+      d.innerHTML = '<label>'+f.label+'</label><input type="text" id="'+f.id+'" placeholder="'+(f.ph||'')+'">';
+    } else if (f.type==='textarea') {
+      d.innerHTML = '<label>'+f.label+'</label><textarea id="'+f.id+'" placeholder="'+(f.ph||'')+'"></textarea>';
+    } else if (f.type==='radio') {
+      var opts = f.opts.map(function(o){ return '<div class="radio-opt" onclick="pick(\''+f.id+'\',\''+o.replace(/'/g,"\\'")+"',this)\"><div class=\"dot\"></div> "+o+'</div>'; }).join('');
+      d.innerHTML = '<label>'+f.label+'</label><div class="radio-group">'+opts+'</div>';
+    } else if (f.type==='checks') {
+      var opts = f.opts.map(function(o){ return '<div class="check-opt" onclick="chk(this,\''+f.id+'\',\''+o.replace(/'/g,"\\'")+'\')"><div class="box"></div> '+o+'</div>'; }).join('');
+      d.innerHTML = '<label>'+f.label+'</label><div class="check-group">'+opts+'</div>';
+    } else if (f.type==='scale') {
+      var btns = [1,2,3,4,5,6,7,8,9,10].map(function(n){ return '<button class="scale-btn" onclick="scl(\''+f.id+'\','+n+',this)">'+n+'</button>'; }).join('');
+      d.innerHTML = '<label>'+f.label+'</label><div class="scale-row">'+btns+'</div><div class="scale-labels"><span>Not at all</span><span>Severely</span></div>';
     }
-    container.appendChild(div);
+    cont.appendChild(d);
   });
 }
 
-function collectConditionFields() {
-  const reason = state.values.reason || 'other';
-  const config = conditionConfigs[reason] || conditionConfigs.other;
-  const condData = {};
-  config.fields.forEach(f => {
-    if (['text','date','textarea'].includes(f.type)) condData[f.id] = v(f.id);
-    else if (['radio','scale'].includes(f.type)) condData[f.id] = state.values[f.id] || '';
-    else if (f.type === 'checks') condData[f.id] = (state.values[f.id]||[]).join(', ');
+function collectCond() {
+  var r = D.reason || 'other';
+  var c = configs[r] || configs.other;
+  var cd = {};
+  c.fields.forEach(function(f) {
+    if (f.type==='text'||f.type==='textarea') cd[f.id]=g(f.id);
+    else if (f.type==='radio'||f.type==='scale') cd[f.id]=D[f.id]||'';
+    else if (f.type==='checks') cd[f.id]=(D[f.id]||[]).join(', ');
   });
-  state.values.conditionSpecific = condData;
+  D.cond = cd;
 }
 
-async function submitForm() {
-  collectSection(5);
-  if (!validate(5)) return;
-  document.getElementById('submittingOverlay').classList.add('show');
+async function submit() {
+  collect(5);
+  if (!ok(5)) return;
+  document.getElementById('overlay').classList.add('show');
   try {
-    const summary = await generateSummary();
+    var summary = await genSummary();
     await sendEmail(summary);
-    document.getElementById('submittingOverlay').classList.remove('show');
-    document.querySelector('.container').innerHTML = `
-      <div style="text-align:center;padding:60px 20px">
-        <div style="width:72px;height:72px;background:#EEF1F8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:32px;color:var(--navy)">✓</div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:400;margin-bottom:12px;color:var(--navy)">Thank you, ${state.values.name?.split(' ')[0]||''}</h2>
-        <p style="color:var(--muted);font-size:16px;line-height:1.7;max-width:440px;margin:0 auto">
-          Your intake form has been received and a summary has been sent to your dietitian.<br><br>
-          If you have any urgent questions before your appointment, please get in touch directly.
-        </p>
-      </div>`;
-  } catch(err) {
-    document.getElementById('submittingOverlay').classList.remove('show');
-    alert('There was an error submitting your form. Please try again or contact the clinic directly.\n\nError: ' + err.message);
+    document.getElementById('overlay').classList.remove('show');
+    document.querySelector('.container').innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="width:68px;height:68px;background:#EEF1F8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:#1C2B4A">✓</div><h2 style="font-family:Playfair Display,serif;font-size:26px;font-weight:400;color:#1C2B4A;margin-bottom:10px">Thank you, '+D.name.split(' ')[0]+'</h2><p style="color:#6B7A99;font-size:15px;line-height:1.7;max-width:420px;margin:0 auto">Your intake form has been received. Your dietitian will review it and be in touch shortly with a booking link.<br><br>If you have any urgent questions please contact us directly.</p></div>';
+  } catch(e) {
+    document.getElementById('overlay').classList.remove('show');
+    alert('There was an error submitting your form. Please try again or contact the clinic directly.\n\n'+e.message);
   }
 }
 
-async function generateSummary() {
-  const d = state.values;
-  const age = d.dob ? Math.floor((new Date()-new Date(d.dob))/31557600000) : 'unknown';
-  const condLines = d.conditionSpecific ? Object.entries(d.conditionSpecific).map(([k,v])=>`  ${k}: ${v||'not provided'}`).join('\n') : '';
-  const prompt = `You are a clinical dietitian's assistant. Generate a structured pre-appointment clinical summary.\n\nPATIENT:\nName: ${d.name||'N/A'} | Age: ${age} | DOB: ${d.dob||'N/A'}\nGP: ${d.gp||'N/A'} | Email: ${d.email||'N/A'} | Phone: ${d.phone||'N/A'}\nNHS number: ${d.nhs||'not provided'}\nAppointment preference: ${d.apptType||'N/A'}\nReferral reason: ${d.reason||'N/A'}\n\nMEDICAL:\nHeight: ${d.height||'-'} | Weight: ${d.weight||'-'}\nConditions: ${d.conditions||'none'}\nMedications: ${d.meds||'none'}\nAllergies: ${d.allergies||'none'}\nSeen dietitian before: ${d.seenDiet||'not stated'}\n\nCONDITION-SPECIFIC (${d.reason}):\n${condLines||'not completed'}\n\nDIET & LIFESTYLE:\nPreferences: ${(d.dietPref||[]).join(', ')||'none'}\nTypical day: ${d.typicalDay||'not provided'}\nDiet rating: ${d.dietRating||'not rated'}/10\nActivity: ${d.activity||'-'} | Alcohol: ${d.alcohol||'-'} | Smoking: ${d.smoking||'-'}\n\nGOALS:\n${d.goals||'not provided'}\nMotivation: ${d.motivation||'not rated'}/10\nOther notes: ${d.anything_else||'none'}\n\nProduce a summary with:\n1. PATIENT OVERVIEW (2–3 sentences)\n2. KEY CLINICAL CONSIDERATIONS (bullets, ⚠️ for red flags)\n3. DIETARY ASSESSMENT SNAPSHOT\n4. GOALS & MOTIVATION SUMMARY\n5. SUGGESTED FOCUS FOR FIRST APPOINTMENT (2–3 recommendations)\n\nClinical language. Concise.`;
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
+async function genSummary() {
+  var age = D.dob ? Math.floor((new Date()-new Date(D.dob))/31557600000) : 'unknown';
+  var condLines = D.cond ? Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||'not provided');}).join('\n') : '';
+  var prompt = 'You are a clinical dietitian assistant. Write a structured pre-appointment clinical summary.\n\nPATIENT:\nName: '+(D.name||'N/A')+' | Age: '+age+' | DOB: '+(D.dob||'N/A')+'\nGP: '+(D.gp||'N/A')+' | Email: '+(D.email||'N/A')+' | Phone: '+(D.phone||'N/A')+'\nNHS: '+(D.nhs||'not provided')+' | Appt preference: '+(D.appt||'N/A')+'\nReferral reason: '+(D.reason||'N/A')+'\n\nMEDICAL:\nHeight: '+(D.height||'-')+' | Weight: '+(D.weight||'-')+'\nConditions: '+(D.conditions||'none')+'\nMedications: '+(D.meds||'none')+'\nAllergies: '+(D.allergies||'none')+'\nSeen dietitian before: '+(D.seen||'not stated')+'\n\nCONDITION-SPECIFIC ('+D.reason+'):\n'+(condLines||'not completed')+'\n\nDIET & LIFESTYLE:\nPreferences: '+((D.diet||[]).join(', ')||'none')+'\nTypical day: '+(D.typDay||'not provided')+'\nDiet rating: '+(D.dietScore||'-')+'/10\nActivity: '+(D.act||'-')+' | Alcohol: '+(D.alc||'-')+' | Smoking: '+(D.smoke||'-')+'\n\nGOALS:\n'+(D.goals||'not provided')+'\nMotivation: '+(D.motiv||'-')+'/10\nOther: '+(D.extra||'none')+'\n\nWrite:\n1. PATIENT OVERVIEW (2-3 sentences)\n2. KEY CLINICAL CONSIDERATIONS (bullets, flag red flags with warning emoji)\n3. DIETARY ASSESSMENT SNAPSHOT\n4. GOALS & MOTIVATION\n5. SUGGESTED FOCUS FOR FIRST APPOINTMENT\n\nBe concise and clinical.';
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
   });
-  if (!response.ok) throw new Error('API error: ' + response.status);
-  const data = await response.json();
-  return data.content?.[0]?.text || 'Summary generation failed.';
+  if (!res.ok) throw new Error('API error '+res.status);
+  var data = await res.json();
+  return data.content[0].text;
 }
 
 async function sendEmail(summary) {
-  const d = state.values;
-  const body = `NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: ${new Date().toLocaleString('en-GB')}\nClient: ${d.name} | DOB: ${d.dob} | Reason: ${d.reason}\nEmail: ${d.email} | Phone: ${d.phone} | Appt preference: ${d.apptType}\n\n=== AI CLINICAL SUMMARY ===\n${summary}\n\n=== RAW DATA ===\nHeight: ${d.height||'-'} | Weight: ${d.weight||'-'}\nConditions: ${d.conditions||'-'}\nMeds: ${d.meds||'-'}\nAllergies: ${d.allergies||'-'}\nDiet prefs: ${(d.dietPref||[]).join(', ')||'-'}\nTypical day: ${d.typicalDay||'-'}\nDiet rating: ${d.dietRating||'-'}/10 | Activity: ${d.activity||'-'} | Alcohol: ${d.alcohol||'-'} | Smoking: ${d.smoking||'-'}\nGoals: ${d.goals||'-'} | Motivation: ${d.motivation||'-'}/10\nNotes: ${d.anything_else||'-'}\nCondition data:\n${d.conditionSpecific?Object.entries(d.conditionSpecific).map(([k,v])=>`  ${k}: ${v||'-'}`).join('\n'):'-'}`;
-  const formData = new FormData();
-  formData.append('access_key','745d3aa8-30e6-4f01-8bb4-7fa0f0fbc8e2');
-  formData.append('subject',`New GCD Intake: ${d.name} — ${d.reason}`);
-  formData.append('from_name','GCD Clinic Intake Form');
-  formData.append('email','gcdietitianclinic@gmail.com');
-  formData.append('message',body);
+  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: '+new Date().toLocaleString('en-GB')+'\nClient: '+D.name+' | DOB: '+D.dob+' | Reason: '+D.reason+'\nEmail: '+D.email+' | Phone: '+D.phone+' | Appt: '+D.appt+'\n\n=== AI CLINICAL SUMMARY ===\n'+summary+'\n\n=== RAW DATA ===\nHeight: '+(D.height||'-')+' | Weight: '+(D.weight||'-')+'\nConditions: '+(D.conditions||'-')+'\nMeds: '+(D.meds||'-')+'\nAllergies: '+(D.allergies||'-')+'\nDiet: '+((D.diet||[]).join(', ')||'-')+'\nTypical day: '+(D.typDay||'-')+'\nDiet score: '+(D.dietScore||'-')+'/10 | Activity: '+(D.act||'-')+' | Alcohol: '+(D.alc||'-')+' | Smoking: '+(D.smoke||'-')+'\nGoals: '+(D.goals||'-')+' | Motivation: '+(D.motiv||'-')+'/10\nNotes: '+(D.extra||'-')+'\nCondition data:\n'+(D.cond?Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||'-');}).join('\n'):'-');
+  var fd = new FormData();
+  fd.append('access_key','745d3aa8-30e6-4f01-8bb4-7fa0f0fbc8e2');
+  fd.append('subject','New GCD Intake: '+D.name+' — '+D.reason);
+  fd.append('from_name','GCD Clinic Intake Form');
+  fd.append('email','gcdietitianclinic@gmail.com');
+  fd.append('message',body);
   try {
-    const res = await fetch('https://api.web3forms.com/submit',{method:'POST',body:formData});
-    const result = await res.json();
-    if (!result.success) throw new Error(result.message);
+    var res = await fetch('https://api.web3forms.com/submit',{method:'POST',body:fd});
+    var r = await res.json();
+    if (!r.success) throw new Error(r.message);
   } catch(e) {
-    sessionStorage.setItem('gcd_last_intake',body);
+    sessionStorage.setItem('gcd_intake',body);
     console.warn('Email fallback:',e.message);
   }
 }
 
-updateProgress();
-
+prog();
+</script>
 </body>
 </html>
