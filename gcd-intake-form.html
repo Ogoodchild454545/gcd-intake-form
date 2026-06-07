@@ -498,7 +498,63 @@ async function genSummary() {
 
 async function sendEmail() {
   var na = 'Not answered';
-  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: '+new Date().toLocaleString('en-GB')+'\nClient: '+D.name+' | DOB: '+D.dob+' | Reason: '+D.reason+'\nEmail: '+D.email+' | Phone: '+D.phone+' | Appt: '+D.appt+'\nNHS: '+(D.nhs||na)+' | GP: '+D.gp+'\n\n=== FORM DATA ===\nHeight: '+(D.height||na)+' | Weight: '+(D.weight||na)+'\nConditions: '+(D.conditions||na)+'\nMeds: '+(D.meds||na)+'\nAllergies: '+(D.allergies||na)+'\nSeen dietitian before: '+(D.seen||na)+'\nDiet prefs: '+((D.diet&&D.diet.length)?D.diet.join(', '):na)+'\nTypical day: '+(D.typDay||na)+'\nDiet score: '+(D.dietScore||na)+'/10\nActivity: '+(D.act||na)+' | Alcohol: '+(D.alc||na)+' | Smoking: '+(D.smoke||na)+'\nGoals: '+(D.goals||na)+'\nMotivation: '+(D.motiv||na)+'/10\nNotes: '+(D.extra||na)+'\n\nCondition-specific answers:\n'+(D.cond?Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||na);}).join('\n'):na);
+
+  var condSection = '';
+  if (D.cond) {
+    var fieldLabels = {
+      ibs_dur:'How long have you had symptoms?',ibs_sym:'Which symptoms do you experience?',ibs_trig:'Any food or lifestyle triggers?',ibs_dx:'Formally diagnosed with IBS by a doctor?',ibs_inv:'Any investigations done (colonoscopy, blood tests, SIBO)?',ibs_fodmap:'Have you tried a low FODMAP diet?',ibs_impact:'How much does IBS affect your daily life? (1-10)',
+      wt_goal:'What is your primary goal?',wt_hist:'Briefly describe your weight history',wt_diets:'What diets or approaches have you tried?',wt_bar:'What are the main barriers to managing your weight?',wt_med:'Any conditions that affect your weight?',wt_bari:'Have you had any bariatric surgery?',wt_meds:'Taking or been offered weight loss medication?',
+      dem_cond:'Condition',dem_stage:'Level of independence with eating',dem_wt:'Has there been unintentional weight loss recently?',dem_sw:'Any swallowing difficulties (dysphagia)?',dem_tex:'Is a modified texture diet required?',dem_texd:'If yes, please specify',dem_app:'Describe current appetite and eating patterns',dem_ons:'Are any oral nutritional supplements currently prescribed?',
+      coe_dx:'Have you been formally diagnosed with coeliac disease?',coe_dur:'How long have you been on a gluten-free diet?',coe_adh:'How strictly do you follow a gluten-free diet?',coe_sym:'Do you still experience symptoms on a gluten-free diet?',coe_bld:'When were coeliac antibodies (tTG IgA) last checked?',coe_def:'Have you been told you have any nutritional deficiencies?',
+      mal_loss:'How much weight have you lost, and over what period?',mal_app:'What is your current appetite like?',mal_cause:'What do you think is causing your weight loss or poor appetite?',mal_ons:'Are you currently taking any oral nutritional supplements?',mal_food:'What foods are you currently able to eat and tolerate?',
+      str_date:'When did your stroke or TIA occur?',str_type:'What type of stroke was it?',str_risk:'What cardiovascular risk factors have you been told you have?',str_bp:'What is your current blood pressure (if known)?',str_chol:'What was your most recent cholesterol result (if known)?',str_sw:'Are there any post-stroke swallowing difficulties?',str_meds:'What cardiovascular medications are you currently taking?',
+      pan_cond:'Which pancreatic condition do you have?',pan_pert:'Are you prescribed pancreatic enzyme replacement therapy (PERT)?',pan_dose:'If taking PERT, what dose and when?',pan_sym:'What digestive symptoms do you currently experience?',pan_fat:'Have you been advised to restrict fat intake?',pan_diab:'Do you have pancreatogenic (type 3c) diabetes or blood sugar issues?',
+      oth_reason:'Please describe your reason for referral',oth_ref:'Were you referred by a healthcare professional?',oth_hist:'Any relevant medical or nutritional history'
+    };
+    Object.entries(D.cond).forEach(function(e) {
+      var label = fieldLabels[e[0]] || e[0];
+      condSection += 'Q: ' + label + '\nA: ' + (e[1] || na) + '\n\n';
+    });
+  } else { condSection = na + '\n'; }
+
+  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\n'
+    + '=====================================\n'
+    + 'Submitted: ' + new Date().toLocaleString('en-GB') + '\n'
+    + '=====================================\n\n'
+
+    + '--- PATIENT DETAILS ---\n\n'
+    + 'Full name: ' + D.name + '\n'
+    + 'Date of birth: ' + D.dob + '\n'
+    + 'Email: ' + D.email + '\n'
+    + 'Phone: ' + D.phone + '\n'
+    + 'NHS number: ' + (D.nhs||na) + '\n'
+    + 'GP surgery: ' + D.gp + '\n'
+    + 'Appointment preference: ' + D.appt + '\n'
+    + 'Referral reason: ' + D.reason + '\n\n'
+
+    + '--- MEDICAL BACKGROUND ---\n\n'
+    + 'Q: What is your height?\nA: ' + (D.height||na) + '\n\n'
+    + 'Q: What is your current weight?\nA: ' + (D.weight||na) + '\n\n'
+    + 'Q: Do you have any diagnosed medical conditions?\nA: ' + (D.conditions||na) + '\n\n'
+    + 'Q: What medications and supplements are you currently taking?\nA: ' + (D.meds||na) + '\n\n'
+    + 'Q: Do you have any food allergies or intolerances?\nA: ' + (D.allergies||na) + '\n\n'
+    + 'Q: Have you seen a dietitian before?\nA: ' + (D.seen||na) + '\n\n'
+
+    + '--- ABOUT YOUR CONDITION (' + (D.reason||'').toUpperCase() + ') ---\n\n'
+    + condSection
+
+    + '--- DIET & LIFESTYLE ---\n\n'
+    + 'Q: Do you follow any specific diet or have dietary preferences?\nA: ' + ((D.diet&&D.diet.length)?D.diet.join(', '):na) + '\n\n'
+    + 'Q: Describe a typical day of eating\nA: ' + (D.typDay||na) + '\n\n'
+    + 'Q: How would you rate your current diet overall? (1-10)\nA: ' + (D.dietScore||na) + '\n\n'
+    + 'Q: What is your physical activity level?\nA: ' + (D.act||na) + '\n\n'
+    + 'Q: How much alcohol do you drink?\nA: ' + (D.alc||na) + '\n\n'
+    + 'Q: What is your smoking status?\nA: ' + (D.smoke||na) + '\n\n'
+
+    + '--- GOALS & MOTIVATION ---\n\n'
+    + 'Q: What are your main goals from working with a dietitian?\nA: ' + (D.goals||na) + '\n\n'
+    + 'Q: How motivated are you to make dietary changes right now? (1-10)\nA: ' + (D.motiv||na) + '\n\n'
+    + 'Q: Is there anything else you would like your dietitian to know?\nA: ' + (D.extra||na);
   var fd = new FormData();
   fd.append('access_key','745d3aa8-30e6-4f01-8bb4-7fa0f0fbc8e2');
   fd.append('subject','New GCD Intake: '+D.name+' — '+D.reason);
