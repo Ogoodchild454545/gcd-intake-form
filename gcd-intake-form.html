@@ -840,6 +840,12 @@ async function sendEmail(summary) {
 }
 
 updateProgress();
-</script>
+
+function reportHeight() {
+  window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+}
+new ResizeObserver(() => reportHeight()).observe(document.body);
+reportHeight();
+
 </body>
 </html>
