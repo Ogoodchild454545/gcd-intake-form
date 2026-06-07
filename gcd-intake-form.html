@@ -470,7 +470,7 @@ function collectCond() {
 }
 
 async function submit() {
-  collect(5);
+  collect(0); collect(2); collect(3); collect(4); collect(5);
   if (!ok(5)) return;
   document.getElementById('overlay').classList.add('show');
   try {
@@ -497,7 +497,8 @@ async function genSummary() {
 }
 
 async function sendEmail() {
-  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: '+new Date().toLocaleString('en-GB')+'\nClient: '+D.name+' | DOB: '+D.dob+' | Reason: '+D.reason+'\nEmail: '+D.email+' | Phone: '+D.phone+' | Appt: '+D.appt+'\nNHS: '+(D.nhs||'not provided')+' | GP: '+D.gp+'\n\n=== FORM DATA ===\nHeight: '+(D.height||'-')+' | Weight: '+(D.weight||'-')+'\nConditions: '+(D.conditions||'-')+'\nMeds: '+(D.meds||'-')+'\nAllergies: '+(D.allergies||'-')+'\nSeen dietitian before: '+(D.seen||'-')+'\nDiet prefs: '+((D.diet||[]).join(', ')||'-')+'\nTypical day: '+(D.typDay||'-')+'\nDiet score: '+(D.dietScore||'-')+'/10\nActivity: '+(D.act||'-')+' | Alcohol: '+(D.alc||'-')+' | Smoking: '+(D.smoke||'-')+'\nGoals: '+(D.goals||'-')+'\nMotivation: '+(D.motiv||'-')+'/10\nNotes: '+(D.extra||'-')+'\n\nCondition-specific answers:\n'+(D.cond?Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||'-');}).join('\n'):'-');
+  var na = 'Not answered';
+  var body = 'NEW CLIENT INTAKE — THE GCD CLINIC\nSubmitted: '+new Date().toLocaleString('en-GB')+'\nClient: '+D.name+' | DOB: '+D.dob+' | Reason: '+D.reason+'\nEmail: '+D.email+' | Phone: '+D.phone+' | Appt: '+D.appt+'\nNHS: '+(D.nhs||na)+' | GP: '+D.gp+'\n\n=== FORM DATA ===\nHeight: '+(D.height||na)+' | Weight: '+(D.weight||na)+'\nConditions: '+(D.conditions||na)+'\nMeds: '+(D.meds||na)+'\nAllergies: '+(D.allergies||na)+'\nSeen dietitian before: '+(D.seen||na)+'\nDiet prefs: '+((D.diet&&D.diet.length)?D.diet.join(', '):na)+'\nTypical day: '+(D.typDay||na)+'\nDiet score: '+(D.dietScore||na)+'/10\nActivity: '+(D.act||na)+' | Alcohol: '+(D.alc||na)+' | Smoking: '+(D.smoke||na)+'\nGoals: '+(D.goals||na)+'\nMotivation: '+(D.motiv||na)+'/10\nNotes: '+(D.extra||na)+'\n\nCondition-specific answers:\n'+(D.cond?Object.entries(D.cond).map(function(e){return '  '+e[0]+': '+(e[1]||na);}).join('\n'):na);
   var fd = new FormData();
   fd.append('access_key','745d3aa8-30e6-4f01-8bb4-7fa0f0fbc8e2');
   fd.append('subject','New GCD Intake: '+D.name+' — '+D.reason);
