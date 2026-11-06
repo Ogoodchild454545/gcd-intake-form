@@ -325,6 +325,7 @@ textarea { resize: vertical; min-height: 96px; }
       <div class="radio-opt" onclick="pick('gpShare','Yes',this)"><div class="dot"></div> Yes</div>
       <div class="radio-opt" onclick="pick('gpShare','No',this)"><div class="dot"></div> No</div>
     </div>
+    <div class="err keep" id="gpShare-err">Please choose Yes or No</div>
   </div>
   <div class="submit-err" id="submitErr"></div>
   <div class="nav"><button class="btn-back" onclick="back(5)">← Back</button><button class="btn-next" onclick="submit()">Submit →</button></div>
@@ -397,6 +398,8 @@ function ok(n) {
   if (n===5) {
     if (isHelper() && !D.basis) { document.getElementById('basis-err').style.display='block'; pass=false; }
     else { document.getElementById('basis-err').style.display='none'; }
+    if (!D.gpShare) { document.getElementById('gpShare-err').style.display='block'; pass=false; }
+    else { document.getElementById('gpShare-err').style.display='none'; }
     if (!D.assess) { document.getElementById('assess-err').style.display='block'; pass=false; }
     else { document.getElementById('assess-err').style.display='none'; }
     if (!D.consent) { document.getElementById('consent-err').style.display='block'; pass=false; }
@@ -477,9 +480,9 @@ function consentWording() {
   document.getElementById('assessTxt').textContent = isHelper()
     ? "I'm happy for the dietitian to carry out a dietetic assessment. I understand they will also check with " + first + " at the appointment, where possible."
     : 'I agree to a dietetic assessment. I understand this may include questions about my health, weight and eating, and that I can ask questions or stop at any time.';
-  document.getElementById('gpShareLbl').textContent = isHelper()
+  document.getElementById('gpShareLbl').innerHTML = (isHelper()
     ? 'Are you happy for the dietitian to share a summary of the assessment with ' + first + "'s GP?"
-    : 'Are you happy for the dietitian to share a summary of the assessment with your GP?';
+    : 'Are you happy for the dietitian to share a summary of the assessment with your GP?') + ' <span class="req">*</span>';
 }
 
 function applyWording() {
