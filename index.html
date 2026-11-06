@@ -133,6 +133,7 @@ textarea { resize: vertical; min-height: 96px; }
   .scale-btn { width: 34px; height: 34px; font-size: 13px; }
   .pair { flex-direction: column; gap: 0; }
 }
+.hidden { display:none !important; }
 </style>
 </head>
 <body>
@@ -152,16 +153,36 @@ textarea { resize: vertical; min-height: 96px; }
   <h2>Before your appointment</h2>
   <p class="sub">This form helps your dietitian understand your situation before you meet. It takes around 8–10 minutes and is fully confidential.</p>
 
-  <div class="field" id="f-name"><label>Full name <span class="req">*</span></label><input type="text" id="name" placeholder="e.g. Jane Smith"><div class="err">Please enter your full name</div></div>
-  <div class="field" id="f-dob"><label>Date of birth <span class="req">*</span></label><input type="date" id="dob"><div class="err">Please enter your date of birth</div></div>
-  <div class="field" id="f-email"><label>Email address <span class="req">*</span></label><input type="email" id="email" placeholder="your@email.com"><div class="err">Please enter a valid email</div></div>
-  <div class="field" id="f-phone"><label>Phone number <span class="req">*</span></label><input type="tel" id="phone" placeholder="07xxx xxxxxx"><div class="err">Please enter your phone number</div></div>
+  <div class="field" id="f-mode">
+    <label class="keep">Who is filling in this form? <span class="req">*</span></label>
+    <div class="radio-group row" id="modeGrp">
+      <div class="radio-opt" onclick="pick('mode','self',this);setMode()"><div class="dot"></div> Me, for myself</div>
+      <div class="radio-opt" onclick="pick('mode','helper',this);setMode()"><div class="dot"></div> Me, for someone else</div>
+    </div>
+    <div class="err" id="mode-err">Please choose one</div>
+  </div>
+
+  <div id="helperBox" class="hidden">
+    <div class="block-head keep">About you</div>
+    <div class="block-sub keep">For example a family member, friend or carer.</div>
+    <div class="field" id="f-hname"><label class="keep">Your full name <span class="req">*</span></label><input type="text" id="hname" placeholder="e.g. Sarah Smith"><div class="err">Please enter your name</div></div>
+    <div class="field" id="f-hrel"><label class="keep">Your relationship to them <span class="req">*</span></label><input type="text" id="hrel" placeholder="e.g. daughter, husband, carer"><div class="err">Please tell us your relationship</div></div>
+    <div class="field" id="f-hphone"><label class="keep">Your phone number <span class="req">*</span></label><input type="tel" id="hphone" placeholder="07xxx xxxxxx"><div class="err">Please enter your phone number</div></div>
+    <div class="field" id="f-hemail"><label class="keep">Your email address <span class="req">*</span></label><input type="email" id="hemail" placeholder="your@email.com" class="keep"><div class="err">Please enter a valid email</div></div>
+    <div class="block-head keep">About the person you're helping</div>
+  </div>
+
+  <div class="field" id="f-name"><label>Full name <span class="req">*</span></label><input type="text" id="name" placeholder="e.g. Jane Smith"><div class="err">Please enter the full name</div></div>
+  <div class="field" id="f-dob"><label>Date of birth <span class="req">*</span></label><input type="date" id="dob"><div class="err">Please enter the date of birth</div></div>
+  <div class="field" id="f-email"><label>Email address <span class="req" id="emailReq">*</span><span class="hint keep hidden" id="emailOpt">Optional, if they have one</span></label><input type="email" id="email" placeholder="your@email.com"><div class="err">Please enter a valid email</div></div>
+  <div class="field" id="f-phone"><label>Phone number <span class="req" id="phoneReq">*</span><span class="hint keep hidden" id="phoneOpt">Optional, if they have one</span></label><input type="tel" id="phone" placeholder="07xxx xxxxxx"><div class="err">Please enter the phone number</div></div>
   <div class="field" id="f-gp"><label>GP surgery name &amp; town <span class="req">*</span></label><input type="text" id="gp" placeholder="e.g. Maidstone Medical Centre, Maidstone"><div class="err">Please enter your GP surgery</div></div>
   <div class="field" id="f-appt">
     <label>Preferred appointment type <span class="req">*</span></label>
     <div class="radio-group" id="apptGrp">
       <div class="radio-opt" onclick="pick('appt','video',this)"><div class="dot"></div> Video call</div>
       <div class="radio-opt" onclick="pick('appt','phone',this)"><div class="dot"></div> Phone call</div>
+      <div class="radio-opt" onclick="pick('appt','face to face',this)"><div class="dot"></div> Face to face</div>
       <div class="radio-opt" onclick="pick('appt','none',this)"><div class="dot"></div> No preference</div>
     </div>
     <div class="err" id="appt-err">Please select a preference</div>
@@ -197,6 +218,9 @@ textarea { resize: vertical; min-height: 96px; }
   <p class="sub">General medical information that helps your dietitian understand the full picture.</p>
   <div class="field"><label>Height</label><input type="text" id="height" placeholder="e.g. 5ft 8in or 173cm"></div>
   <div class="field"><label>Current weight</label><input type="text" id="weight" placeholder="e.g. 14 stone or 89kg"></div>
+  <div class="block-head">Weight history</div>
+  <div class="block-sub">Rough answers are fine. If you don't know exact weights, tell us if clothes, rings or dentures feel looser or tighter.</div>
+  <div class="field"><label>Previous weights<span class="hint">Any weights you remember, with roughly when, and whether weight has gone up or down recently</span></label><textarea id="wtHist" placeholder="e.g. 11 stone last Christmas, 10 stone in the summer"></textarea></div>
   <div class="field"><label>Diagnosed medical conditions<span class="hint">List all, even if unrelated to your referral</span></label><textarea id="conditions" placeholder="e.g. Type 2 diabetes, hypertension…"></textarea></div>
   <div class="field"><label>Current medications and supplements<span class="hint">Include prescribed meds, vitamins, OTC supplements</span></label><textarea id="meds" placeholder="e.g. Metformin 500mg, Vitamin D 1000IU…"></textarea></div>
   <div class="field"><label>Food allergies or intolerances</label><textarea id="allergies" placeholder="e.g. Peanut allergy, lactose intolerant…"></textarea></div>
@@ -232,14 +256,9 @@ textarea { resize: vertical; min-height: 96px; }
       <div class="check-opt" onclick="chk(this,'diet','kosher')"><div class="box"></div> Kosher</div>
       <div class="check-opt" onclick="chk(this,'diet','glutenfree')"><div class="box"></div> Gluten-free</div>
       <div class="check-opt" onclick="chk(this,'diet','dairyfree')"><div class="box"></div> Dairy-free</div>
-      <div class="check-opt" onclick="chk(this,'diet','other')"><div class="box"></div> Other</div>
+      <div class="check-opt" onclick="chk(this,'diet','other');document.getElementById('dietOther').classList.toggle('hidden',!this.classList.contains('on'))"><div class="box"></div> Other</div>
     </div>
-  </div>
-  <div class="field"><label>How would you rate your current diet? (1–10)</label>
-    <div class="scale-row" id="dietScaleGrp">
-      <button class="scale-btn" onclick="scl('dietScore',1,this)">1</button><button class="scale-btn" onclick="scl('dietScore',2,this)">2</button><button class="scale-btn" onclick="scl('dietScore',3,this)">3</button><button class="scale-btn" onclick="scl('dietScore',4,this)">4</button><button class="scale-btn" onclick="scl('dietScore',5,this)">5</button><button class="scale-btn" onclick="scl('dietScore',6,this)">6</button><button class="scale-btn" onclick="scl('dietScore',7,this)">7</button><button class="scale-btn" onclick="scl('dietScore',8,this)">8</button><button class="scale-btn" onclick="scl('dietScore',9,this)">9</button><button class="scale-btn" onclick="scl('dietScore',10,this)">10</button>
-    </div>
-    <div class="scale-labels"><span>Very poor</span><span>Excellent</span></div>
+    <input type="text" id="dietOther" class="hidden" style="margin-top:10px" placeholder="Please describe">
   </div>
   <div class="field"><label>Physical activity level</label>
     <div class="radio-group" id="actGrp">
@@ -249,7 +268,7 @@ textarea { resize: vertical; min-height: 96px; }
       <div class="radio-opt" onclick="pick('act','active',this)"><div class="dot"></div> Very active (daily exercise or physical job)</div>
     </div>
   </div>
-  <div class="field"><label>Alcohol intake</label>
+  <div class="field" id="f-alc"><label>Alcohol intake</label>
     <div class="radio-group row" id="alcGrp">
       <div class="radio-opt" onclick="pick('alc','none',this)"><div class="dot"></div> None</div>
       <div class="radio-opt" onclick="pick('alc','occasional',this)"><div class="dot"></div> Occasional</div>
@@ -257,7 +276,7 @@ textarea { resize: vertical; min-height: 96px; }
       <div class="radio-opt" onclick="pick('alc','heavy',this)"><div class="dot"></div> Heavy</div>
     </div>
   </div>
-  <div class="field"><label>Smoking status</label>
+  <div class="field" id="f-smoke"><label>Smoking status</label>
     <div class="radio-group row" id="smokeGrp">
       <div class="radio-opt" onclick="pick('smoke','never',this)"><div class="dot"></div> Never</div>
       <div class="radio-opt" onclick="pick('smoke','ex',this)"><div class="dot"></div> Ex-smoker</div>
@@ -272,19 +291,40 @@ textarea { resize: vertical; min-height: 96px; }
   <div class="step-label">Step 5 of 5</div>
   <h2>Goals &amp; consent</h2>
   <p class="sub">Almost done — tell us what you're hoping to achieve and confirm your consent.</p>
-  <div class="field"><label>What are your main goals?<span class="hint">Be as specific as you like</span></label><textarea id="goals" placeholder="e.g. I want to understand which foods trigger my symptoms…" style="min-height:96px"></textarea></div>
-  <div class="field"><label>How motivated are you to make changes right now? (1–10)</label>
+  <div class="field"><label>What are your main goals?<span class="hint keep">Be as specific as you like</span></label><textarea id="goals" placeholder="e.g. I want to understand which foods trigger my symptoms…" style="min-height:96px"></textarea></div>
+  <div class="field" id="f-motiv"><label>How motivated are you to make changes right now? (1–10)</label>
     <div class="scale-row" id="motivGrp">
       <button class="scale-btn" onclick="scl('motiv',1,this)">1</button><button class="scale-btn" onclick="scl('motiv',2,this)">2</button><button class="scale-btn" onclick="scl('motiv',3,this)">3</button><button class="scale-btn" onclick="scl('motiv',4,this)">4</button><button class="scale-btn" onclick="scl('motiv',5,this)">5</button><button class="scale-btn" onclick="scl('motiv',6,this)">6</button><button class="scale-btn" onclick="scl('motiv',7,this)">7</button><button class="scale-btn" onclick="scl('motiv',8,this)">8</button><button class="scale-btn" onclick="scl('motiv',9,this)">9</button><button class="scale-btn" onclick="scl('motiv',10,this)">10</button>
     </div>
     <div class="scale-labels"><span>Not at all</span><span>Extremely motivated</span></div>
   </div>
-  <div class="field"><label>Anything else you'd like us to know?</label><textarea id="extra" placeholder="Any concerns, questions, or context…"></textarea></div>
+  <div class="field"><label class="keep">Anything else you'd like us to know?</label><textarea id="extra" placeholder="Any concerns, questions, or context…"></textarea></div>
   <hr class="divider">
-  <div class="consent-box"><strong>Data protection &amp; privacy</strong><br><br>The information you provide is used to assess, plan and deliver your dietetic care at The GCD Clinic. It is held securely, and access is limited to the dietitian responsible for your care.<br><br>Your form is submitted through a third-party service acting on our instructions. We do not sell your information or use it for marketing. It will not be shared with anyone else without your agreement, unless required by law or necessary to protect someone from serious harm.</div>
+  <div class="field hidden" id="f-basis">
+    <label class="keep">Which of these applies? <span class="req">*</span><span class="hint keep">If you have Power of Attorney, it needs to be the health and welfare type (not property and finance). Please email us a copy before the first appointment.</span></label>
+    <div class="radio-group" id="basisGrp">
+      <div class="radio-opt" onclick="pick('basis','They know about this and are happy for me to fill it in',this)"><div class="dot"></div> They know about this and are happy for me to fill it in</div>
+      <div class="radio-opt" onclick="pick('basis','I have Lasting Power of Attorney for their health and welfare',this)"><div class="dot"></div> I have Lasting Power of Attorney for their health and welfare</div>
+      <div class="radio-opt" onclick="pick('basis','I am their court-appointed deputy for health and welfare',this)"><div class="dot"></div> I'm their court-appointed deputy for health and welfare</div>
+      <div class="radio-opt" onclick="pick('basis','They cannot agree at the moment, and there is no attorney. Completed in their best interests',this)"><div class="dot"></div> They can't agree at the moment, there's no attorney, and I'm doing this in their best interests</div>
+    </div>
+    <div class="err" id="basis-err">Please choose the option that applies</div>
+  </div>
+  <div class="consent-box" id="privBox"><strong>Data protection &amp; privacy</strong><br><br>The information you provide is used to assess, plan and deliver your dietetic care at The GCD Clinic. It is held securely, and access is limited to the dietitian responsible for your care.<br><br>Your form is submitted through a third-party service acting on our instructions. We do not sell your information or use it for marketing. It will not be shared with anyone else without your agreement, unless required by law or necessary to protect someone from serious harm.<span id="helperPriv" class="hidden"><br><br>As you're filling this in for someone else, we'll keep your contact details with theirs so we can talk to you about their care. The dietitian will also check consent with you both at the first appointment.</span></div>
   <div class="field" id="f-consent">
-    <div class="check-opt" id="consentBtn" onclick="chk(this,'consent','yes')"><div class="box"></div> I confirm that I have read and understood how my information will be used</div>
-    <div class="err" id="consent-err">Please confirm your consent to continue</div>
+    <div class="check-opt" id="consentBtn" onclick="chk(this,'consent','yes')"><div class="box"></div> <span id="consentTxt">I confirm that I have read and understood how my information will be used</span></div>
+    <div class="err keep" id="consent-err">Please tick the box to continue</div>
+  </div>
+  <div class="field" id="f-assess">
+    <div class="check-opt" id="assessBtn" onclick="chk(this,'assess','yes')"><div class="box"></div> <span id="assessTxt">I agree to a dietetic assessment. I understand this may include questions about my health, weight and eating, and that I can ask questions or stop at any time.</span></div>
+    <div class="err keep" id="assess-err">Please tick the box to continue</div>
+  </div>
+  <div class="field" id="f-gpshare">
+    <label class="keep" id="gpShareLbl">Are you happy for the dietitian to share a summary of the assessment with your GP?</label>
+    <div class="radio-group row" id="gpShareGrp">
+      <div class="radio-opt" onclick="pick('gpShare','Yes',this)"><div class="dot"></div> Yes</div>
+      <div class="radio-opt" onclick="pick('gpShare','No',this)"><div class="dot"></div> No</div>
+    </div>
   </div>
   <div class="submit-err" id="submitErr"></div>
   <div class="nav"><button class="btn-back" onclick="back(5)">← Back</button><button class="btn-next" onclick="submit()">Submit →</button></div>
@@ -294,6 +334,7 @@ textarea { resize: vertical; min-height: 96px; }
 
 <script>
 var D = {};
+var PREVIEW = /[?&]preview\b/.test(location.search);
 var cur = 0;
 
 var FREQ = ['Never/rarely','Less than once a week','1–2 times a week','3–4 times a week','5–6 times a week','Once a day','More than once a day'];
@@ -309,6 +350,9 @@ function show(n) {
   prog();
   window.scrollTo(0,0);
   if (n===3) buildCond();
+  if (n===5) consentWording();
+  if (n===4) { var skip = noAlcSmoke(); ['f-alc','f-smoke'].forEach(function(id){ document.getElementById(id).classList.toggle('hidden',skip); }); }
+  applyWording();
 }
 
 function next(n) {
@@ -322,12 +366,26 @@ function back(n) { show(n-1); }
 function g(id) { var el=document.getElementById(id); return el?el.value.trim():''; }
 
 function ok(n) {
+  if (PREVIEW) return true;
   var pass = true;
   if (n===0) {
+    if (!D.mode) { document.getElementById('mode-err').style.display='block'; pass=false; }
+    else { document.getElementById('mode-err').style.display='none'; }
+    if (isHelper()) {
+      pass = req('hname','f-hname') && pass;
+      pass = req('hrel','f-hrel') && pass;
+      pass = req('hphone','f-hphone') && pass;
+      pass = email('hemail','f-hemail') && pass;
+    }
     pass = req('name','f-name') && pass;
     pass = req('dob','f-dob') && pass;
-    pass = email('email','f-email') && pass;
-    pass = req('phone','f-phone') && pass;
+    if (isHelper()) {
+      if (g('email')) pass = email('email','f-email') && pass; else document.getElementById('f-email').classList.remove('bad');
+      document.getElementById('f-phone').classList.remove('bad');
+    } else {
+      pass = email('email','f-email') && pass;
+      pass = req('phone','f-phone') && pass;
+    }
     pass = req('gp','f-gp') && pass;
     if (!D.appt) { document.getElementById('appt-err').style.display='block'; pass=false; }
     else { document.getElementById('appt-err').style.display='none'; }
@@ -337,6 +395,10 @@ function ok(n) {
     else { document.getElementById('reason-err').style.display='none'; }
   }
   if (n===5) {
+    if (isHelper() && !D.basis) { document.getElementById('basis-err').style.display='block'; pass=false; }
+    else { document.getElementById('basis-err').style.display='none'; }
+    if (!D.assess) { document.getElementById('assess-err').style.display='block'; pass=false; }
+    else { document.getElementById('assess-err').style.display='none'; }
     if (!D.consent) { document.getElementById('consent-err').style.display='block'; pass=false; }
     else { document.getElementById('consent-err').style.display='none'; }
   }
@@ -364,7 +426,7 @@ function pick(key, val, el) {
 
 function chk(el, key, val) {
   el.classList.toggle('on');
-  if (key==='consent') { D.consent = el.classList.contains('on'); return; }
+  if (key==='consent' || key==='assess') { D[key] = el.classList.contains('on'); return; }
   if (!D[key]) D[key]=[];
   if (el.classList.contains('on')) { if(D[key].indexOf(val)<0) D[key].push(val); }
   else { D[key]=D[key].filter(function(v){return v!==val;}); }
@@ -377,10 +439,71 @@ function scl(key, val, el) {
 }
 
 function collect(n) {
-  if (n===0) { D.name=g('name'); D.dob=g('dob'); D.email=g('email'); D.phone=g('phone'); D.gp=g('gp'); }
-  if (n===2) { D.height=g('height'); D.weight=g('weight'); D.conditions=g('conditions'); D.meds=g('meds'); D.allergies=g('allergies'); }
+  if (n===0) { D.hname=g('hname'); D.hrel=g('hrel'); D.hphone=g('hphone'); D.hemail=g('hemail'); D.name=g('name'); D.dob=g('dob'); D.email=g('email'); D.phone=g('phone'); D.gp=g('gp'); }
+  if (n===2) { D.height=g('height'); D.weight=g('weight'); D.wtHist=g('wtHist'); D.conditions=g('conditions'); D.meds=g('meds'); D.allergies=g('allergies'); }
   if (n===3) { collectCond(); }
+  if (n===4) { D.dietOther=g('dietOther'); }
   if (n===5) { D.goals=g('goals'); D.extra=g('extra'); }
+}
+
+function noAlcSmoke() { return D.reason==='dementia' || D.reason==='malnutrition'; }
+
+function isHelper() { return D.mode==='helper'; }
+
+function setMode() {
+  var h = isHelper();
+  ['helperBox','emailOpt','phoneOpt','f-basis','helperPriv'].forEach(function(id){ document.getElementById(id).classList.toggle('hidden',!h); });
+  ['emailReq','phoneReq','f-motiv'].forEach(function(id){ document.getElementById(id).classList.toggle('hidden',h); });
+  document.getElementById('consentTxt').textContent = h
+    ? 'I have read how this information will be used, and I confirm the details I have given are true to the best of my knowledge'
+    : 'I confirm that I have read and understood how my information will be used';
+  applyWording();
+}
+
+// Turns "you/your" into "they/their" when someone is filling in the form for another person.
+// Anything marked class="keep" (or inside it) is left alone.
+function theyify(t) {
+  return t
+    .replace(/\bAre you\b/g,'Are they').replace(/\bare you\b/g,'are they')
+    .replace(/\bDo you\b/g,'Do they').replace(/\bdo you\b/g,'do they')
+    .replace(/\bHave you\b/g,'Have they').replace(/\bhave you\b/g,'have they')
+    .replace(/\byou've\b/g,"they've").replace(/\byou're\b/g,"they're")
+    .replace(/\bYour\b/g,'Their').replace(/\byour\b/g,'their')
+    .replace(/\bYou\b/g,'They').replace(/\byou\b/g,'they');
+}
+
+function consentWording() {
+  var first = (D.name||'').split(' ')[0] || 'them';
+  document.getElementById('assessTxt').textContent = isHelper()
+    ? "I'm happy for the dietitian to carry out a dietetic assessment. I understand they will also check with " + first + " at the appointment, where possible."
+    : 'I agree to a dietetic assessment. I understand this may include questions about my health, weight and eating, and that I can ask questions or stop at any time.';
+  document.getElementById('gpShareLbl').textContent = isHelper()
+    ? 'Are you happy for the dietitian to share a summary of the assessment with ' + first + "'s GP?"
+    : 'Are you happy for the dietitian to share a summary of the assessment with your GP?';
+}
+
+function applyWording() {
+  var h = isHelper();
+  var els = document.querySelectorAll('.container h2, .container p.sub, .container label, .container .hint, .container .block-head, .container .block-sub, .container .err');
+  els.forEach(function(el){
+    if (el.closest('.keep') || el.classList.contains('keep')) return;
+    el.childNodes.forEach(function(nd){
+      if (nd.nodeType!==3 || !nd.nodeValue.trim()) return;
+      if (nd._orig===undefined) nd._orig = nd.nodeValue;
+      nd.nodeValue = h ? theyify(nd._orig) : nd._orig;
+    });
+  });
+  var pb = document.getElementById('privBox').firstChild.parentNode;
+  pb.childNodes.forEach(function(nd){
+    if (nd.nodeType!==3) return;
+    if (nd._orig===undefined) nd._orig = nd.nodeValue;
+    nd.nodeValue = h ? nd._orig.replace(/\byour\b/g,'their') : nd._orig;
+  });
+  document.querySelectorAll('.container input[placeholder], .container textarea[placeholder]').forEach(function(el){
+    if (el.classList.contains('keep')) return;
+    if (el.dataset.orig===undefined) el.dataset.orig = el.placeholder;
+    el.placeholder = h ? theyify(el.dataset.orig).replace('their@email.com','their email, if they have one') : el.dataset.orig;
+  });
 }
 
 var configs = {
@@ -421,9 +544,7 @@ var configs = {
     {id:'wt_meds',label:'Taking or been offered weight loss medication (e.g. Mounjaro, Wegovy)?',type:'radio',opts:['Yes, currently taking','Yes, been offered but not started','No']}
   ]},
   dementia: { title:'About nutritional needs', sub:'This section may be completed by a carer or family member.', fields:[
-    {id:'dem_cond',label:'Condition',type:'radio',opts:["Alzheimer's disease","Vascular dementia","Lewy body dementia","Parkinson's disease","Parkinson's with dementia","Other / not yet diagnosed"]},
     {id:'dem_stage',label:'Level of independence with eating',type:'radio',opts:['Independent','Needs prompting','Needs physical assistance','Fully dependent']},
-    {id:'dem_wt',label:'Unintentional weight loss recently?',type:'radio',opts:['Yes — significant (>5kg)','Yes — some','No','Unsure']},
     {id:'dem_sw',label:'Swallowing difficulties (dysphagia)?',type:'radio',opts:['Yes — assessed by SLT','Yes — suspected','No']},
     {id:'dem_tex',label:'Modified texture diet required?',type:'radio',opts:['Yes — specify below','No','Unsure']},
     {id:'dem_texd',label:'If yes, please specify (e.g. IDDSI level)',type:'text',ph:'e.g. IDDSI Level 4 — puréed'},
@@ -439,7 +560,6 @@ var configs = {
     {id:'coe_def',label:'Any nutritional deficiencies identified?',type:'textarea',ph:'e.g. low iron, B12, vitamin D…'}
   ]},
   malnutrition: { title:'About nutritional status', sub:'This helps us assess risk and support recovery.', fields:[
-    {id:'mal_loss',label:'How much weight lost, over what period?',type:'text',ph:'e.g. 8kg over 3 months'},
     {id:'mal_app',label:'Current appetite',type:'radio',opts:['Normal','Reduced','Very poor','Almost none']},
     {id:'mal_cause',label:'What do you think is causing weight loss or poor appetite?',type:'textarea',ph:'e.g. cancer treatment, poor mobility…'},
     {id:'mal_ons',label:'Currently taking oral nutritional supplements?',type:'text',ph:'e.g. Ensure Plus 2x daily'},
@@ -523,13 +643,20 @@ function collectCond() {
 
 async function submit() {
   document.getElementById('submitErr').style.display = 'none';
-  collect(0); collect(2); collect(3); collect(5);
+  collect(0); collect(2); collect(3); collect(4); collect(5);
   if (!ok(5)) return;
+  if (PREVIEW) {
+    var box = document.getElementById('submitErr');
+    box.innerHTML = '<strong>Preview mode:</strong> nothing has been sent. Remove ?preview from the web address to use the form for real.';
+    box.style.display = 'block';
+    box.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   document.getElementById('overlay').classList.add('show');
   try {
     await sendEmail();
     document.getElementById('overlay').classList.remove('show');
-    document.querySelector('.container').innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="width:68px;height:68px;background:#EEF1F8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:#1C2B4A">✓</div><h2 style="font-family:Playfair Display,serif;font-size:26px;font-weight:400;color:#1C2B4A;margin-bottom:10px">Thank you, '+D.name.split(' ')[0]+'</h2><p style="color:#6B7A99;font-size:15px;line-height:1.7;max-width:420px;margin:0 auto">Your intake form has been received. Your dietitian will review it and be in touch shortly with a booking link.<br><br>If you have any urgent questions please contact us directly.</p></div>';
+    document.querySelector('.container').innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="width:68px;height:68px;background:#EEF1F8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:#1C2B4A">✓</div><h2 style="font-family:Playfair Display,serif;font-size:26px;font-weight:400;color:#1C2B4A;margin-bottom:10px">Thank you, '+(isHelper()?D.hname:D.name).split(' ')[0]+'</h2><p style="color:#6B7A99;font-size:15px;line-height:1.7;max-width:420px;margin:0 auto">Your intake form has been received. Your dietitian will review it and be in touch shortly with a booking link.<br><br>If you have any urgent questions please contact us directly.</p></div>';
   } catch(e) {
     document.getElementById('overlay').classList.remove('show');
     var box = document.getElementById('submitErr');
@@ -567,11 +694,29 @@ async function sendEmail() {
     + 'Submitted: ' + new Date().toLocaleString('en-GB') + '\n'
     + '=====================================\n\n'
 
+    + (isHelper()
+      ? '*** COMPLETED ON SOMEONE ELSE\'S BEHALF ***\n\n'
+        + '--- WHO FILLED IN THIS FORM ---\n\n'
+        + 'Name: ' + D.hname + '\n'
+        + 'Relationship: ' + D.hrel + '\n'
+        + 'Phone: ' + D.hphone + '\n'
+        + 'Email: ' + D.hemail + '\n\n'
+        + 'Consent basis: ' + D.basis + '\n'
+        + 'Declaration: ' + D.hname + ' ticked to confirm they read the privacy notice and that the details given are true to the best of their knowledge.\n'
+        + 'Date and time: ' + new Date().toLocaleString('en-GB') + '\n'
+        + (D.basis && D.basis.indexOf('Attorney')>-1 ? 'ACTION: request a copy of the health and welfare LPA.\n' : '')
+        + (D.basis && D.basis.indexOf('deputy')>-1 ? 'ACTION: request a copy of the Court of Protection deputyship order.\n' : '')
+        + '\n'
+      : 'Completed by: the client themselves\n\n')
+    + '--- CONSENT ---\n\n'
+    + 'Assessment: ' + (isHelper() ? D.hname + ' agreed to the assessment going ahead (to be checked with the client at the appointment where possible)' : 'Client agreed to a dietetic assessment') + '\n'
+    + 'Share summary with GP: ' + (D.gpShare || 'Not answered') + '\n'
+    + 'Privacy notice: read and confirmed\n\n'
     + '--- PATIENT DETAILS ---\n\n'
     + 'Full name: ' + D.name + '\n'
     + 'Date of birth: ' + D.dob + '\n'
-    + 'Email: ' + D.email + '\n'
-    + 'Phone: ' + D.phone + '\n'
+    + 'Email: ' + (D.email||na) + '\n'
+    + 'Phone: ' + (D.phone||na) + '\n'
     + 'GP surgery: ' + D.gp + '\n'
     + 'Appointment preference: ' + D.appt + '\n'
     + 'Referral reason: ' + D.reason + '\n\n'
@@ -579,6 +724,7 @@ async function sendEmail() {
     + '--- MEDICAL BACKGROUND ---\n\n'
     + 'Q: What is your height?\nA: ' + (D.height||na) + '\n\n'
     + 'Q: What is your current weight?\nA: ' + (D.weight||na) + '\n\n'
+    + 'Q: Weight history\nA: ' + (D.wtHist||na) + '\n\n'
     + 'Q: Do you have any diagnosed medical conditions?\nA: ' + (D.conditions||na) + '\n\n'
     + 'Q: What medications and supplements are you currently taking?\nA: ' + (D.meds||na) + '\n\n'
     + 'Q: Do you have any food allergies or intolerances?\nA: ' + (D.allergies||na) + '\n\n'
@@ -588,20 +734,19 @@ async function sendEmail() {
     + condSection
 
     + '--- DIET & LIFESTYLE ---\n\n'
-    + 'Q: Do you follow any specific diet or have dietary preferences?\nA: ' + ((D.diet&&D.diet.length)?D.diet.join(', '):na) + '\n\n'
-    + 'Q: How would you rate your current diet overall? (1-10)\nA: ' + (D.dietScore||na) + '\n\n'
+    + 'Q: Do you follow any specific diet or have dietary preferences?\nA: ' + ((D.diet&&D.diet.length)?D.diet.map(function(x){ return (x==='other' && D.dietOther) ? 'Other: '+D.dietOther : x; }).join(', '):na) + '\n\n'
     + 'Q: What is your physical activity level?\nA: ' + (D.act||na) + '\n\n'
-    + 'Q: How much alcohol do you drink?\nA: ' + (D.alc||na) + '\n\n'
-    + 'Q: What is your smoking status?\nA: ' + (D.smoke||na) + '\n\n'
+    + (noAlcSmoke() ? '' : 'Q: How much alcohol do you drink?\nA: ' + (D.alc||na) + '\n\n'
+    + 'Q: What is your smoking status?\nA: ' + (D.smoke||na) + '\n\n')
 
     + '--- GOALS & MOTIVATION ---\n\n'
     + 'Q: What are your main goals from working with a dietitian?\nA: ' + (D.goals||na) + '\n\n'
-    + 'Q: How motivated are you to make dietary changes right now? (1-10)\nA: ' + (D.motiv||na) + '\n\n'
+    + (isHelper() ? '' : 'Q: How motivated are you to make dietary changes right now? (1-10)\nA: ' + (D.motiv||na) + '\n\n')
     + 'Q: Is there anything else you would like your dietitian to know?\nA: ' + (D.extra||na);
 
   var fd = new FormData();
   fd.append('access_key','745d3aa8-30e6-4f01-8bb4-7fa0f0fbc8e2');
-  fd.append('subject','New GCD Intake: '+D.name+' — '+D.reason);
+  fd.append('subject',(isHelper()?'[On behalf] ':'')+'New GCD Intake: '+D.name+' - '+D.reason);
   fd.append('from_name','GCD Clinic Intake Form');
   fd.append('email','gcdietitianclinic@gmail.com');
   fd.append('message',body);
@@ -621,6 +766,12 @@ async function sendEmail() {
 }
 
 prog();
+if (PREVIEW) {
+  var pb = document.createElement('div');
+  pb.textContent = 'PREVIEW MODE: you can skip questions, and nothing will be sent';
+  pb.style.cssText = 'background:#F0C419;color:#1C2B4A;text-align:center;font-size:12px;font-weight:500;padding:8px;letter-spacing:0.04em';
+  document.querySelector('.header').after(pb);
+}
 </script>
 </body>
 </html>
